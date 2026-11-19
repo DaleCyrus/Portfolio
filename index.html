@@ -42,6 +42,8 @@ svg{image-rendering:pixelated}
 /* rooms you can't see skip rendering, and their animations rest */
 main > section{content-visibility:auto;contain-intrinsic-size:auto 100svh}
 .asleep *,.asleep *::before,.asleep *::after{animation-play-state:paused !important}
+/* one-time fade-ins finish right away in rooms you can't see, so no text is left half faded */
+.asleep .txt,.asleep .pane,.asleep .open{animation:none !important}
 /* light mode for low-power phones: glows stay lit but stop pulsing */
 .lite .glowy,.lite .featured .scroll-btn .spr{animation:none !important;filter:drop-shadow(0 0 6px rgba(45,212,191,.8))}
 .lite .featured .scroll-btn .spr{animation:bob 2.2s steps(5) infinite alternate !important}
@@ -86,8 +88,8 @@ main > section{content-visibility:auto;contain-intrinsic-size:auto 100svh}
 .hudbtn:hover{border-color:var(--teal)}
 .contact-btn{gap:.55rem;font-size:.6rem;padding:.55rem .5rem;color:var(--teal)}
 
-/* everything you can click pulses with the same teal glow */
-.glowy{animation:cglow 1.2s steps(3) infinite alternate}
+/* everything you can click has the same steady teal glow (a steady glow is far lighter for slow phones than a pulsing one) */
+.glowy{filter:drop-shadow(0 0 5px rgba(45,212,191,.8))}
 @keyframes cglow{from{filter:drop-shadow(0 0 1px rgba(45,212,191,.35))}to{filter:drop-shadow(0 0 9px rgba(45,212,191,.95))}}
 a:hover .glowy,a:focus-visible .glowy,button:hover .glowy,button:focus-visible .glowy,.glowy:hover,.glowy:focus-visible{
   animation:none;filter:brightness(1.15) drop-shadow(0 0 12px var(--teal))}
@@ -802,6 +804,26 @@ button,a{-webkit-tap-highlight-color:transparent}
   .step span{max-width:none}
   .map-menu{right:0;width:min(21rem,100%)}
 }
+
+/* pause button: words say what it does; gold while paused */
+#motionBtn span{max-width:5.6rem}
+#motionBtn.is-paused{background:#3d2f1c;border-color:#ffd23f;color:#ffd23f}
+#motionBtn.is-paused .glowy,#motionBtn.is-paused.glowy{filter:drop-shadow(0 0 5px rgba(255,210,63,.7))}
+/* the slow-device tip sits just above the bottom bar */
+.lag-tip{position:absolute;right:0;bottom:calc(100% + 14px);width:19rem;background:var(--cream);color:var(--book-ink);border:4px solid #000;
+  box-shadow:0 0 0 3px #ffd23f,6px 6px 0 3px #000;padding:.8rem .9rem;font-size:1.02rem;line-height:1.4}
+.lag-tip[hidden]{display:none}
+.lag-tip p{margin:0 0 .6rem}
+.lag-tip b{color:#a3172d}
+.lag-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.lag-tip .btn{font-size:.55rem;padding:.6rem .75rem;min-height:44px}
+.lag-x{font:400 .55rem/1 var(--pix);background:none;color:var(--book-ink);border:3px solid var(--book-ink);padding:.6rem .75rem;min-height:44px;cursor:pointer}
+.lag-tip::after{content:"";position:absolute;right:9.5rem;top:100%;border:10px solid transparent;border-top:12px solid #000}
+@media (max-width:819px), (max-height:560px){
+  .lag-tip{left:0;right:0;width:auto}
+  .lag-tip::after{right:auto;left:62%}
+  #motionBtn span{max-width:none}
+}
 </style>
 </head>
 <body>
@@ -823,8 +845,12 @@ button,a{-webkit-tap-highlight-color:transparent}
 <nav class="map-nav" aria-label="Dungeon map">
   <button class="step glowy" id="prevRoom" aria-label="Previous floor"><i class="spr" data-s="arrowU" data-px="4" aria-hidden="true"></i><span>Previous floor</span></button>
   <button class="step glowy" id="nextRoom" aria-label="Next floor"><i class="spr" data-s="arrowDn" data-px="4" aria-hidden="true"></i><span>Next floor</span></button>
-  <button class="step pause-btn glowy" id="motionBtn"><i class="spr" data-s="pauseI" data-px="4" aria-hidden="true"></i><span><span class="pz-t">Pause</span><span class="sr-only"> animations</span></span></button>
+  <button class="step pause-btn glowy" id="motionBtn"><i class="spr" data-s="pauseI" data-px="4" aria-hidden="true"></i><span><span class="pz-t">Pause</span> animations</span></button>
   <button class="map-btn glowy" id="mapBtn" aria-expanded="false" aria-controls="mapMenu"><i class="spr" data-s="map" data-px="4" aria-hidden="true"></i>Map</button>
+  <div class="lag-tip" id="lagTip" role="status" hidden>
+    <p><b>Running slow?</b> If your device is low end, pause the animations to make the site smoother.</p>
+    <span class="lag-row"><button type="button" class="btn" id="lagPause">Pause now</button><button type="button" class="lag-x" id="lagX">Dismiss</button></span>
+  </div>
   <span class="map-tip" id="mapTip" aria-hidden="true" hidden>Open the map to jump to any room or page</span>
   <div class="map-menu" id="mapMenu" hidden>
     <p class="map-head">Dungeon map</p>
@@ -997,7 +1023,7 @@ button,a{-webkit-tap-highlight-color:transparent}
           <h2>At a glance</h2>
           <h3>Experience</h3>
           <ul class="bul">
-            <li>On-the-job training at New Cabalan National High School</li>
+            <li>On-the-job training (200 hours) at New Cabalan National High School</li>
             <li>80-hour work immersion at COMTEQ CTESD</li>
           </ul>
           <p class="go"><a href="#experience">Visit the Training grounds</a></p>
@@ -1084,7 +1110,7 @@ button,a{-webkit-tap-highlight-color:transparent}
     <div class="quests">
       <article class="quest" aria-labelledby="q1">
         <span class="stamp" aria-hidden="true">Quest complete</span>
-        <p class="q-type">On-the-job training</p>
+        <p class="q-type">On-the-job training, 200 hours</p>
         <h3 id="q1">New Cabalan National High School</h3>
         <ul class="objectives">
           <li><b>IT support and repair:</b> fixed several laptops and a DepEd unit stuck in a boot loop.</li>
@@ -2249,7 +2275,17 @@ function makePager(box, items, names, label, mq, onShow) {
     cur = n;
     var on = mq.matches;
     box.classList.toggle('paged', on);
-    items.forEach(function (el, i) { el.classList.toggle('pg-off', on && i !== n); });
+    items.forEach(function (el, i) {
+      el.classList.toggle('pg-off', on && i !== n);
+      // the page on show may scroll inside itself, so keyboards can reach it too
+      if (on && i === n) {
+        el.tabIndex = 0;
+        if (el.tagName !== 'ARTICLE') { el.setAttribute('role', 'region'); el.setAttribute('aria-label', names[i]); }
+      } else {
+        el.removeAttribute('tabindex');
+        if (el.tagName !== 'ARTICLE') { el.removeAttribute('role'); el.removeAttribute('aria-label'); }
+      }
+    });
     if (onShow) onShow(n, on);
     // at the first or last page that button has nowhere to go, so it steps aside
     btns[0].disabled = n === 0;
@@ -2599,6 +2635,8 @@ var motionBtn = document.getElementById('motionBtn');
 function setMotion(paused) {
   document.documentElement.classList.toggle('still', paused);
   motionBtn.querySelector('.pz-t').textContent = paused ? 'Play' : 'Pause';
+  motionBtn.classList.toggle('is-paused', paused);
+  if (paused) hideLag(false);
   motionBtn.querySelector('.spr').innerHTML = sprite(paused ? ART.playI : ART.pauseI, 4);
   talk(panels.hidden);
   try { localStorage.setItem('dale-motion', paused ? 'paused' : 'on'); } catch (err) {}
@@ -2611,11 +2649,53 @@ try { if (localStorage.getItem('dale-motion') === 'paused') setMotion(true); } c
 // rooms out of view pause their animations
 var sleeper = new IntersectionObserver(function (entries) {
   entries.forEach(function (en) { en.target.classList.toggle('asleep', !en.isIntersecting); });
-});
+}, { rootMargin: '-2px 0px' });
 document.querySelectorAll('main > section').forEach(function (sec) { sleeper.observe(sec); });
+// slow-device tip: shown when the page stutters or the device is low on memory or cores
+var lagTip = document.getElementById('lagTip'), lagShown = false;
+function hideLag(forever) {
+  if (!lagTip) return;
+  lagTip.hidden = true;
+  if (forever) try { localStorage.setItem('dale-lagtip', 'seen'); } catch (err) {}
+}
+function suggestPause() {
+  if (lagShown || isStill()) return;
+  try { if (localStorage.getItem('dale-lagtip')) return; } catch (err) {}
+  lagShown = true;
+  hideTip(false);
+  lagTip.hidden = false;
+  // it steps aside by itself after 20 seconds; the Pause button stays in the bar
+  setTimeout(function () { hideLag(false); }, 20000);
+}
+document.getElementById('lagPause').addEventListener('click', function () {
+  setMotion(true);
+  hideLag(true);
+  motionBtn.focus();
+});
+document.getElementById('lagX').addEventListener('click', function () { hideLag(true); motionBtn.focus(); });
+// count frames for two seconds; fewer than 40 a second means the animations are too heavy here
+function measureFps(then) {
+  if (document.visibilityState !== 'visible' || isStill()) return;
+  var frames = 0, t0 = performance.now();
+  requestAnimationFrame(function tick(t) {
+    frames++;
+    if (t - t0 < 2000) { requestAnimationFrame(tick); return; }
+    if (document.visibilityState === 'visible') then(frames * 1000 / (t - t0));
+  });
+}
+function checkLag() {
+  measureFps(function (fps) {
+    if (fps < 40) { document.documentElement.classList.add('lite'); suggestPause(); }
+  });
+}
+setTimeout(checkLag, 2500);
+var lagChecks = 0;
+addEventListener('scrollend', function () { if (!lagShown && lagChecks++ < 3) checkLag(); });
+
 // phones with little memory or few cores get the light mode
 if ((navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)) {
   document.documentElement.classList.add('lite');
+  setTimeout(suggestPause, 3000);
 }
 
 // certificates: on a computer, preview the PDF in a pop-up; on a phone, open it directly
