@@ -18,7 +18,8 @@
 }
 *{box-sizing:border-box}
 html{scroll-snap-type:y proximity;scroll-behavior:smooth;overflow-y:scroll}
-@media (min-width:820px) and (min-height:561px){html{scroll-snap-type:y mandatory}}
+/* big screens: every room is exactly one screen tall, so snapping never fights an overflowing room */
+@media (min-width:820px) and (min-height:561px){html{scroll-snap-type:y mandatory}main > section{height:100svh}}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 1.2rem/1.5 var(--body)}
 h1,h2,h3{font-family:var(--pix);font-weight:400;margin:0}
 p{margin:0 0 1em;max-width:60ch}
@@ -494,7 +495,7 @@ input:focus,textarea:focus{border-color:var(--teal)}
   .page{font-size:.95rem}
 }
 /* ===== room 2: the training grounds ===== */
-.board{position:relative;z-index:3;width:min(1000px,68vw);max-height:calc(100svh - 5.5rem - var(--fh) - 1.5rem);overflow:auto;
+.board{position:relative;z-index:3;width:min(1000px,68vw);max-height:calc(100svh - 5.5rem - var(--fh) - 1.5rem - 12px);overflow:auto;
   background:repeating-linear-gradient(0deg,#4a2e18 0 22px,#3d2410 22px 26px);border:10px solid var(--wood);
   box-shadow:0 0 0 4px #000,inset 0 0 0 4px #9a5b2e,10px 10px 0 4px #000;padding:1.3rem 1.4rem 1.5rem}
 .board-title{text-align:center;font-size:clamp(.8rem,1.6vw,1rem);color:var(--cream);text-shadow:3px 3px 0 #000;margin:0 0 1.2rem}
@@ -548,6 +549,19 @@ input:focus,textarea:focus{border-color:var(--teal)}
   .spread.skills ul.bul li{font-size:.88rem}
 }
 
+/* phones: one page at a time, with Back and Next under it */
+.pager{display:none}
+.paged > .pager,.board.paged > .pager{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-top:1rem}
+.paged .pg-off{display:none !important}
+.pg-btn{font:400 .6rem/1 var(--pix);background:var(--teal);color:var(--teal-ink);border:3px solid #000;box-shadow:3px 3px 0 #000;
+  padding:.7rem .9rem;min-height:44px;min-width:5.5rem;cursor:pointer}
+.pg-btn:disabled{background:#3a4150;color:#c3c8d2;box-shadow:none;cursor:default}
+.pg-count{font:400 .6rem/1 var(--pix);color:var(--ink);background:var(--panel);border:3px solid #000;padding:.55rem .6rem}
+#heroPanels.paged{gap:0}
+#heroPanels.paged .more,.open.paged .turn{display:none}
+.open.paged > .pager{margin:.4rem 8px 8px}
+.open.paged .pg-count{background:var(--wood);color:var(--cream)}
+
 /* ===== map navigation ===== */
 .map-nav{position:fixed;z-index:12;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));display:flex;align-items:stretch;gap:.6rem}
 .step{min-height:44px;display:flex;align-items:center;justify-content:center;gap:.55rem;font:400 .5rem/1.35 var(--pix);color:var(--ink);text-align:left;padding:.35rem .6rem !important;background:var(--panel);border:3px solid var(--teal);box-shadow:4px 4px 0 #000;cursor:pointer;padding:0}
@@ -593,6 +607,7 @@ html.still .glowy{filter:drop-shadow(0 0 6px rgba(45,212,191,.8))}
 .room-no{font:400 .55rem/1.3 var(--pix);color:var(--cream)}
 .bb-title{font:400 1.75rem/1.2 var(--pix);color:#fff;text-shadow:4px 4px 0 #000}
 .hall-hint{top:10.6rem}
+.ledge{display:none}
 
 /* messenger: click him to get in touch */
 .messenger{position:absolute;z-index:4;left:calc(3% + 140px);bottom:calc(var(--fh) - 2px);background:none;border:0;padding:0;cursor:pointer;line-height:0}
@@ -614,7 +629,7 @@ html{-webkit-text-size-adjust:100%}
 button,a{-webkit-tap-highlight-color:transparent}
 .hud{top:max(.8rem,env(safe-area-inset-top));left:max(.8rem,env(safe-area-inset-left))}
 @media (max-width:819px), (max-height:560px){
-  html{scroll-snap-type:y proximity}
+  html{scroll-snap-type:none}
   .hide-md{display:none}
   .hud{gap:.5rem;padding:.35rem .45rem .35rem .35rem}
   .avatar{width:44px;height:44px}
@@ -622,9 +637,12 @@ button,a{-webkit-tap-highlight-color:transparent}
   .big-banner{top:5.6rem;transform:translateX(-50%) scale(.66)}
   #projects .hall-hint{left:50%;right:auto;transform:translateX(-50%);top:13.2rem;font-size:.95rem}
   #projects{min-height:max(100svh,780px)}
-  .messenger{left:7%;bottom:auto;top:19.6rem}
+  /* the messenger and the cabinet stand on a stone ledge above the scrolls */
+  .ledge{display:block;position:absolute;z-index:2;left:0;right:0;top:26.5rem;height:26px;border-top:6px solid #000;border-bottom:4px solid #000;
+    box-shadow:0 8px 0 rgba(0,0,0,.35)}
+  .messenger{left:7%;bottom:auto;top:26.5rem;transform:translateY(-100%)}
   .msg-bubble{width:8.6rem;font-size:.5rem}
-  .showcase{left:auto;right:5%;bottom:auto;top:15.6rem;transform:scale(.6);transform-origin:top right}
+  .showcase{left:auto;right:5%;bottom:auto;top:26.5rem;transform:translateY(-100%) scale(.6);transform-origin:bottom right}
   .turn,.btn{min-height:44px}
   /* windows become sheets that fill the width of the screen */
   .frame{left:3vw !important;right:3vw;top:max(5.6rem,env(safe-area-inset-top)) !important;width:auto !important;height:auto !important;
@@ -958,6 +976,7 @@ button,a{-webkit-tap-highlight-color:transparent}
 <section class="room" id="projects" aria-labelledby="projTitle">
   <div class="tile" data-tile="brick" data-px="4" aria-hidden="true"></div>
   <div class="floor" data-tile="floor" data-px="4" aria-hidden="true"></div>
+  <div class="ledge" data-tile="floor" data-px="4" aria-hidden="true"></div>
   <div class="arches" data-arches aria-hidden="true"></div>
   <div class="shade" aria-hidden="true"></div>
 
@@ -1995,7 +2014,7 @@ function openBook(then) {
 // the glowing book on the lectern opens the pages and moves focus to them
 document.getElementById('tomeBtn').addEventListener('click', function () {
   openBook(function () {
-    var h = book.querySelector('.spread:not([hidden]) h2');
+    var h = book.querySelector('.spread:not([hidden]) .page:not(.pg-off) h2');
     if (h) h.focus();
   });
 });
@@ -2027,6 +2046,63 @@ function turnTo(n) {
 book.querySelectorAll('[data-turn]').forEach(function (b) {
   b.addEventListener('click', function () { turnTo(+b.dataset.turn); });
 });
+
+// phones: long panels show one part at a time, with Back and Next buttons under them
+var compact = matchMedia('(max-width:819px), (max-height:560px)');
+function makePager(box, items, names, label, mq, onShow) {
+  var nav = document.createElement('div');
+  nav.className = 'pager';
+  nav.setAttribute('role', 'group');
+  nav.setAttribute('aria-label', label);
+  nav.innerHTML = '<button type="button" class="pg-btn glowy">Back<span class="sr-only"></span></button>' +
+    '<span class="pg-count" aria-hidden="true"></span>' +
+    '<button type="button" class="pg-btn glowy">Next<span class="sr-only"></span></button>' +
+    '<span class="sr-only" aria-live="polite"></span>';
+  box.appendChild(nav);
+  var btns = nav.querySelectorAll('button'), count = nav.querySelector('.pg-count'), news = nav.lastChild;
+  var cur = 0;
+  function show(n, announce) {
+    cur = n;
+    var on = mq.matches;
+    box.classList.toggle('paged', on);
+    items.forEach(function (el, i) { el.classList.toggle('pg-off', on && i !== n); });
+    if (onShow) onShow(n, on);
+    btns[0].disabled = n === 0;
+    btns[1].disabled = n === items.length - 1;
+    btns[0].lastChild.textContent = n > 0 ? ': ' + names[n - 1] : '';
+    btns[1].lastChild.textContent = n < items.length - 1 ? ': ' + names[n + 1] : '';
+    count.textContent = (n + 1) + ' / ' + items.length;
+    if (announce) news.textContent = names[n] + ', page ' + (n + 1) + ' of ' + items.length;
+  }
+  [-1, 1].forEach(function (d, k) {
+    btns[k].addEventListener('click', function () {
+      var n = Math.min(Math.max(cur + d, 0), items.length - 1);
+      if (n === cur) return;
+      show(n, true);
+      // keep the new page in view, and keep focus on a button that still works
+      var top = items[n].getBoundingClientRect().top;
+      if (top < 70) scrollBy({ top: top - 90, behavior: 'auto' });
+      if (btns[k].disabled) btns[1 - k].focus();
+    });
+  });
+  mq.addEventListener('change', function () { show(cur, false); });
+  show(0, false);
+  return { show: show };
+}
+makePager(document.getElementById('heroPanels'), [].slice.call(document.querySelectorAll('#heroPanels .pane')),
+  ['Introduction', 'Portrait'], 'Introduction pages', compact);
+var bookPages = [].slice.call(book.querySelectorAll('.page'));
+makePager(book.querySelector('.open'), bookPages,
+  bookPages.map(function (pg) { return pg.querySelector('h2').textContent; }), 'Book pages', narrow,
+  function (n, on) {
+    // the pages live in spreads of two, so show the spread that holds this page
+    var sp = on ? [].indexOf.call(spreads, bookPages[n].closest('.spread')) : +book.dataset.spread;
+    spreads.forEach(function (s, i) { s.hidden = i !== sp; });
+    book.dataset.spread = sp;
+  });
+var quests = [].slice.call(document.querySelectorAll('.quest'));
+makePager(document.querySelector('.board'), quests,
+  quests.map(function (q) { return q.querySelector('h3').textContent; }), 'Quests', compact);
 
 // windows: open, drag, resize, close
 var zTop = 20, opened = 0;
@@ -2164,7 +2240,9 @@ document.querySelector('.map-nav').addEventListener('focusout', function (e) {
 function goToRoom(id) {
   var room = document.getElementById(id);
   if (!room) return;
-  room.scrollIntoView({ behavior: isStill() ? 'auto' : 'smooth' });
+  var i = roomIds.indexOf(id);
+  if (i > -1 && typeof travel === 'function') travel(i);
+  else room.scrollIntoView({ behavior: isStill() ? 'auto' : 'smooth' });
   room.setAttribute('tabindex', '-1');
   room.focus({ preventScroll: true });
 }
@@ -2216,16 +2294,62 @@ addEventListener('resize', updateRoom);
 updateRoom();
 
 // the arrows move one room up or down; focus stays on the arrow so it can be pressed again
-function stepRoom(d) {
-  var n = Math.min(Math.max(whichRoom() + d, 0), roomIds.length - 1);
+// one trip at a time: a new jump replaces the old one instead of fighting it
+var tripTo = null, tripTimer = null;
+function travel(n) {
+  tripTo = n;
   var room = document.getElementById(roomIds[n]);
   room.scrollIntoView({ behavior: isStill() ? 'auto' : 'smooth' });
-  // if anything changed size while scrolling, line the room up again
-  setTimeout(function () {
-    if (Math.abs(room.getBoundingClientRect().top) > 2) room.scrollIntoView({ behavior: 'auto' });
-  }, 900);
+  clearTimeout(tripTimer);
+  // when the scroll ends, line the room up exactly in case something changed size on the way
+  tripTimer = setTimeout(arrive, 1600);
+}
+function arrive() {
+  if (tripTo === null) return;
+  var room = document.getElementById(roomIds[tripTo]);
+  tripTo = null;
+  clearTimeout(tripTimer);
+  if (Math.abs(room.getBoundingClientRect().top) > 2) room.scrollIntoView({ behavior: 'auto' });
+}
+if ('onscrollend' in window) window.addEventListener('scrollend', function () { setTimeout(arrive, 50); });
+function stepRoom(d) {
+  var from = tripTo !== null ? tripTo : whichRoom();
+  var n = Math.min(Math.max(from + d, 0), roomIds.length - 1);
+  travel(n);
   document.getElementById('roomNews').textContent = 'Now in ' + roomNames[n];
 }
+
+// mouse wheel on bigger screens: one flick moves exactly one floor
+var snapMQ = matchMedia('(min-width:820px) and (min-height:561px)');
+var wheelBusy = false, wheelQuiet = null;
+function canScrollInside(el, dy) {
+  for (; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+    var oy = getComputedStyle(el).overflowY;
+    if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) {
+      if (dy > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;
+      if (dy < 0 && el.scrollTop > 0) return true;
+    }
+  }
+  return false;
+}
+window.addEventListener('wheel', function (e) {
+  if (!snapMQ.matches || e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+  if (document.documentElement.style.overflow === 'hidden') return;
+  if (canScrollInside(e.target, e.deltaY)) return;
+  // a room taller than the screen scrolls normally until you reach its edge
+  var r = document.getElementById(roomIds[whichRoom()]).getBoundingClientRect();
+  if (tripTo === null && r.height > innerHeight + 40) {
+    if (e.deltaY > 0 && r.bottom > innerHeight + 2) return;
+    if (e.deltaY < 0 && r.top < -2) return;
+  }
+  e.preventDefault();
+  // wait for the wheel to go quiet before the next flick counts
+  clearTimeout(wheelQuiet);
+  wheelQuiet = setTimeout(function () { wheelBusy = false; }, 220);
+  if (wheelBusy || Math.abs(e.deltaY) < 4) return;
+  wheelBusy = true;
+  stepRoom(e.deltaY > 0 ? 1 : -1);
+}, { passive: false });
 prevBtn.addEventListener('click', function () { stepRoom(-1); });
 nextBtn.addEventListener('click', function () { stepRoom(1); });
 
