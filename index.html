@@ -944,8 +944,8 @@ button,a{-webkit-tap-highlight-color:transparent}
 #svParch > .more-hint,#svParch > .less-hint{height:3rem}
 #svParch > .more-hint{margin-top:-3rem}
 #svParch > .less-hint{margin-bottom:-3rem}
-.win > .more-hint{background:linear-gradient(rgba(15,27,25,0),var(--panel) 75%)}
-.win > .less-hint{background:linear-gradient(var(--panel) 25%,rgba(15,27,25,0))}
+/* scrolls and windows hold pictures, so they get only the small tags, no fade over the content */
+#svParch > .more-hint,#svParch > .less-hint,.win > .more-hint,.win > .less-hint{background:none}
 </style>
 </head>
 <body>
