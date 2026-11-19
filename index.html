@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dale Cyrus D. Edrosalan | Portfolio</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0a2a33">
 <meta name="description" content="Portfolio of Dale Cyrus D. Edrosalan, BSCS student, UI/UX designer, web and game developer.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +37,15 @@ main:focus,section:focus,h2[tabindex="-1"]:focus{outline:none}
 .skip:focus{top:1rem}
 svg{image-rendering:pixelated}
 .spr{display:inline-block;line-height:0}
+.spr img{image-rendering:pixelated;-webkit-user-drag:none;user-select:none}
+[data-tile]{image-rendering:pixelated}
+/* rooms you can't see skip rendering, and their animations rest */
+main > section{content-visibility:auto;contain-intrinsic-size:auto 100svh}
+.asleep *,.asleep *::before,.asleep *::after{animation-play-state:paused !important}
+/* light mode for low-power phones: glows stay lit but stop pulsing */
+.lite .glowy,.lite .featured .scroll-btn .spr{animation:none !important;filter:drop-shadow(0 0 6px rgba(45,212,191,.8))}
+.lite .featured .scroll-btn .spr{animation:bob 2.2s steps(5) infinite alternate !important}
+.lite .firefly,.lite .twinkle,.lite .aura{animation:none !important}
 .p{position:absolute;line-height:0}
 .twinkle{animation:blink 2.4s steps(2,start) infinite}
 .blink{animation:blink 1.2s steps(2,start) infinite}
@@ -555,12 +568,26 @@ input:focus,textarea:focus{border-color:var(--teal)}
 .paged .pg-off{display:none !important}
 .pg-btn{font:400 .6rem/1 var(--pix);background:var(--teal);color:var(--teal-ink);border:3px solid #000;box-shadow:3px 3px 0 #000;
   padding:.7rem .9rem;min-height:44px;min-width:5.5rem;cursor:pointer}
-.pg-btn:disabled{background:#3a4150;color:#c3c8d2;box-shadow:none;cursor:default}
+.pg-btn{display:inline-flex;align-items:center;gap:.45rem;min-width:0;text-align:left}
+.pg-btn.next{text-align:right}
+.pg-btn .spr{line-height:0;flex:none}
+.pg-count{white-space:nowrap;flex:none}
+.pg-btn:disabled{visibility:hidden;min-width:0;padding:0;border:0;width:0}
 .pg-count{font:400 .6rem/1 var(--pix);color:var(--ink);background:var(--panel);border:3px solid #000;padding:.55rem .6rem}
 #heroPanels.paged{gap:0}
 #heroPanels.paged .more,.open.paged .turn{display:none}
 .open.paged > .pager{margin:.4rem 8px 8px}
 .open.paged .pg-count{background:var(--wood);color:var(--cream)}
+
+/* certificate preview pop-up */
+.cert-view{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(3,6,8,.82)}
+.cert-view[hidden]{display:none}
+.cv-box{display:flex;flex-direction:column;width:min(1000px,94vw);height:min(88svh,820px);background:var(--panel);border:4px solid var(--teal);box-shadow:8px 8px 0 #000}
+.cv-bar{display:flex;align-items:center;gap:.8rem;padding:.6rem .8rem;border-bottom:4px solid #000;background:#0a2a33}
+.cv-bar h2{flex:1;margin:0;font-size:.7rem;line-height:1.5;color:var(--ink)}
+.cv-open{font-size:.55rem;padding:.65rem .8rem}
+.cv-close{font:400 .55rem/1 var(--pix);background:var(--panel);color:var(--ink);border:3px solid var(--teal);box-shadow:3px 3px 0 #000;padding:.65rem .8rem;min-height:44px;cursor:pointer}
+.cv-frame{flex:1;width:100%;border:0;background:#525659}
 
 /* ===== map navigation ===== */
 .map-nav{position:fixed;z-index:12;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));display:flex;align-items:stretch;gap:.6rem}
@@ -663,6 +690,118 @@ button,a{-webkit-tap-highlight-color:transparent}
   .fb{display:none}
   .glowy{animation:none !important;filter:drop-shadow(0 0 6px rgba(45,212,191,.8))}
 }
+
+/* ===== phones held upright: every room is exactly one screen ===== */
+.shelf{display:none}
+@media (max-width:819px) and (min-height:561px){
+  html{scroll-snap-type:y mandatory}
+  main > section{height:100svh;min-height:0 !important;contain-intrinsic-size:auto 100svh}
+  .room .door{display:none}
+  .room,#about,#experience{padding:8.6rem .75rem calc(var(--fh) + .6rem)}
+  .intro-pane{padding:1.6rem 1.2rem 1.4rem}
+  .intro-pane h1{font-size:1rem}
+  .intro-pane .desc{font-size:1.12rem;margin-top:.7rem}
+  .intro-pane .start{font-size:.6rem;padding:.8rem .9rem}
+  .intro-pane .hint{font-size:.95rem;margin-top:.7rem}
+
+  /* the surface: one card at a time between the HUD and the campfire */
+  .scene{--gh:120px}
+  .panels{position:absolute;inset:0;padding:6.4rem 1rem calc(var(--gh) + 112px);gap:0}
+  .panels{justify-content:center}
+  .panels .pane:not(.pg-off){flex:1 1 auto;min-height:0;overflow:auto;width:100%;max-width:34rem;align-self:center}
+  .panels .intro-pane:not(.pg-off){flex:0 1 auto}
+  #heroPanels.paged > .pager{width:100%;max-width:34rem;align-self:center}
+  .intro-pane{justify-content:flex-start}
+  .intro-pane h1{margin-top:auto}
+  .intro-pane .hint{margin-bottom:auto}
+  .photo-pane .photo-frame{flex:1;min-height:0;aspect-ratio:auto;max-height:none}
+  #heroPanels.paged > .pager{flex:none;margin-top:.7rem}
+
+  /* training grounds: one quest at a time, long ones scroll inside the card */
+  #experience{flex-direction:column;align-items:stretch}
+  .board{flex:1;min-height:0;width:100%;max-height:none;display:flex;flex-direction:column;overflow:hidden}
+  .board-title{flex:none;margin-bottom:.8rem}
+  .quests{flex:1;min-height:0;display:flex;flex-direction:column}
+  .quest:not(.pg-off){flex:1;min-height:0;overflow:auto}
+  .board.paged > .pager{flex:none;margin-top:.8rem}
+
+  /* scroll hall, top to bottom: the featured scroll, the other two on wall shelves, then the cabinet and the messenger on the floor */
+  #projects{--s:.6;--bw:270px;--bf:226px;--bc:330px}
+  #projects .ledge{display:none}
+  .big-banner{top:5.4rem;transform:translateX(-50%) scale(.58);transform-origin:top center}
+  #projects .hall-hint{top:11.2rem}
+  .shrines{position:absolute;inset:0;transform:none;display:block;pointer-events:none}
+  .shrine{position:absolute;width:200px;margin-left:-100px;transform:scale(var(--s));transform-origin:bottom center;pointer-events:auto}
+  .shrine:nth-child(1){left:24%;bottom:var(--bw)}
+  .shrine.featured{left:50%;bottom:var(--bc)}
+  .shrine:nth-child(3){left:76%;bottom:var(--bf)}
+  .cs-tag{margin-bottom:1.3rem}
+  .scroll-btn{margin-bottom:.9rem}
+  .shelf{display:block;position:relative;width:196px;height:20px;margin-top:-2px;background:#5b6272;border:4px solid #000;
+    box-shadow:inset 0 5px 0 #7d8597,inset 0 -4px 0 #3d4250}
+  .shelf::after{content:"";position:absolute;left:50%;top:100%;width:56px;height:30px;margin-left:-28px;background:#3d4250;
+    border:4px solid #000;border-top:0;clip-path:polygon(0 0,100% 0,100% 30%,75% 30%,75% 60%,55% 60%,55% 100%,45% 100%,45% 60%,25% 60%,25% 30%,0 30%)}
+  .showcase{left:auto;right:3%;top:auto;bottom:calc(var(--fh) - 2px);transform:scale(.5);transform-origin:bottom right}
+  .messenger{left:4%;top:auto;bottom:calc(var(--fh) - 2px);transform:none}
+  .msg-bubble{left:calc(100% + 10px);bottom:55%;transform:none;width:7.6rem}
+  .msg-bubble::after{left:-11px;top:auto;bottom:10px;width:10px;height:10px;border:3px solid #000;border-right:0;border-top:3px solid #000}
+}
+@media (max-width:819px) and (min-height:561px) and (max-height:739px){
+  #projects{--s:.5;--bw:236px;--bf:214px;--bc:290px}
+  .big-banner{top:5rem;transform:translateX(-50%) scale(.5)}
+  #projects .hall-hint{display:none}
+  .scene{--gh:100px}
+  .intro-pane .hint{display:none}
+  .intro-pane{padding:1.3rem 1rem 1.1rem}
+  .intro-pane h1{font-size:.85rem}
+  .intro-pane .desc{font-size:1rem;margin:.5rem 0 .2rem}
+  .intro-pane .start{font-size:.55rem;padding:.6rem .7rem}
+}
+@media (min-width:720px) and (max-width:819px) and (min-height:561px){
+  #about .open,#about .beam{top:8.4rem}
+}
+@media (min-width:600px) and (max-width:819px) and (min-height:900px){
+  #projects{--s:.8;--bw:330px;--bf:290px;--bc:430px}
+  .showcase{transform:scale(.65)}
+}
+/* archives on narrow upright phones: the book fills the room and each page scrolls inside */
+@media (max-width:719px) and (min-height:561px){
+  #about{flex-direction:column;align-items:stretch}
+  #about .archive{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+  #about .lectern{display:none}
+  .archive[data-state="open"] .open{display:flex;flex-direction:column;flex:1;min-height:0}
+  .open .spread:not([hidden]){flex:1;min-height:0;margin:8px 8px 0;grid-template-rows:minmax(0,1fr)}
+  .open .page{min-height:0;overflow:auto}
+  .open.paged > .pager{flex:none}
+}
+
+/* ===== bottom bar: floors, pause and the map, easy to spot ===== */
+.pause-btn .sr-only{position:absolute}
+.map-btn{font-size:.75rem;padding:.75rem 1.1rem;background:#2b2116;color:#ffd23f;border-color:#ffd23f;box-shadow:4px 4px 0 #000,0 0 14px rgba(255,210,63,.45)}
+.map-btn:hover{background:#3d2f1c}
+.map-btn[aria-expanded="true"]{background:#ffd23f;color:#2b2116}
+.map-tip{position:absolute;right:0;bottom:calc(100% + 14px);width:13.5rem;background:#ffd23f;color:#2b2116;border:3px solid #000;box-shadow:3px 3px 0 #000;
+  font:400 .55rem/1.5 var(--pix);padding:.55rem .65rem;pointer-events:none;animation:nudge 1s steps(2) infinite alternate}
+.map-tip[hidden]{display:none}
+.map-tip::after{content:"";position:absolute;right:1.6rem;top:100%;border:9px solid transparent;border-top:11px solid #000}
+/* map: rooms, and the pages inside the room you open */
+.room-row{display:flex;align-items:stretch}
+.room-row a{flex:1}
+.sub-tg{flex:none;width:44px !important;justify-content:center;padding:0 !important}
+.sub-tg::before{content:"";width:0;height:0;border:7px solid transparent;border-top:9px solid var(--book-ink);margin-top:7px}
+.sub-tg[aria-expanded="true"]::before{border-top-color:transparent;border-bottom:9px solid var(--book-ink);margin:0 0 7px}
+.map-menu ul.subs{display:flex;flex-wrap:wrap;gap:.35rem;margin:.1rem 0 .5rem 2.6rem;padding:0;border:0}
+.map-menu ul.subs[hidden]{display:none}
+.map-menu .chip{width:auto;min-height:36px;padding:.25rem .55rem;font-size:.98rem;border:2px solid var(--book-ink);background:#f6eed7;gap:0}
+.map-menu .chip:hover,.map-menu .chip:focus-visible{background:var(--book-ink);color:var(--cream)}
+@media (max-width:819px), (max-height:560px){
+  /* phones: four equal buttons across the bottom, icon over words */
+  .map-nav{left:max(.5rem,env(safe-area-inset-left));right:max(.5rem,env(safe-area-inset-right));bottom:max(.5rem,env(safe-area-inset-bottom));gap:.4rem}
+  .map-nav > button{flex:1 1 0;min-width:0;flex-direction:column;gap:.3rem;padding:.4rem .2rem !important;text-align:center;font-size:.45rem;line-height:1.3}
+  .map-nav > .map-btn{font-size:.6rem}
+  .step span{max-width:none}
+  .map-menu{right:0;width:min(21rem,100%)}
+}
 </style>
 </head>
 <body>
@@ -684,20 +823,29 @@ button,a{-webkit-tap-highlight-color:transparent}
 <nav class="map-nav" aria-label="Dungeon map">
   <button class="step glowy" id="prevRoom" aria-label="Previous floor"><i class="spr" data-s="arrowU" data-px="4" aria-hidden="true"></i><span>Previous floor</span></button>
   <button class="step glowy" id="nextRoom" aria-label="Next floor"><i class="spr" data-s="arrowDn" data-px="4" aria-hidden="true"></i><span>Next floor</span></button>
-  <button class="map-btn glowy" id="mapBtn" aria-expanded="false" aria-controls="mapMenu"><i class="spr" data-s="map" data-px="3" aria-hidden="true"></i>Map</button>
+  <button class="step pause-btn glowy" id="motionBtn"><i class="spr" data-s="pauseI" data-px="4" aria-hidden="true"></i><span><span class="pz-t">Pause</span><span class="sr-only"> animations</span></span></button>
+  <button class="map-btn glowy" id="mapBtn" aria-expanded="false" aria-controls="mapMenu"><i class="spr" data-s="map" data-px="4" aria-hidden="true"></i>Map</button>
+  <span class="map-tip" id="mapTip" aria-hidden="true" hidden>Open the map to jump to any room or page</span>
   <div class="map-menu" id="mapMenu" hidden>
     <p class="map-head">Dungeon map</p>
     <ol class="rooms">
-      <li><a href="#home"><span class="num" aria-hidden="true">0</span><span>The surface<small>Home</small></span></a></li>
-      <li><a href="#about"><span class="num" aria-hidden="true">1</span><span>The archives<small>About me and skills</small></span></a></li>
-      <li><a href="#experience"><span class="num" aria-hidden="true">2</span><span>Training grounds<small>Experience</small></span></a></li>
-      <li><a href="#projects"><span class="num" aria-hidden="true">3</span><span>The scroll hall<small>Projects</small></span></a></li>
+      <li>
+        <div class="room-row"><a href="#home"><span class="num" aria-hidden="true">0</span><span>The surface<small>Home</small></span></a><button class="sub-tg" aria-expanded="false" aria-controls="sub-home"><span class="sr-only">Pages in The surface</span></button></div>
+        <ul class="subs" id="sub-home" hidden><li><button class="chip" data-go="home" data-pg="0">Intro</button></li><li><button class="chip" data-go="home" data-pg="1">Portrait</button></li></ul>
+      </li>
+      <li>
+        <div class="room-row"><a href="#about"><span class="num" aria-hidden="true">1</span><span>The archives<small>About me and skills</small></span></a><button class="sub-tg" aria-expanded="false" aria-controls="sub-about"><span class="sr-only">Pages in The archives</span></button></div>
+        <ul class="subs" id="sub-about" hidden><li><button class="chip" data-go="about" data-pg="0">About me</button></li><li><button class="chip" data-go="about" data-pg="1">What I do</button></li><li><button class="chip" data-go="about" data-pg="2">Highlights</button></li><li><button class="chip" data-go="about" data-pg="3">At a glance</button></li><li><button class="chip" data-go="about" data-pg="4">Stack</button></li><li><button class="chip" data-go="about" data-pg="5">Skills</button></li></ul>
+      </li>
+      <li>
+        <div class="room-row"><a href="#experience"><span class="num" aria-hidden="true">2</span><span>Training grounds<small>Experience</small></span></a><button class="sub-tg" aria-expanded="false" aria-controls="sub-experience"><span class="sr-only">Pages in Training grounds</span></button></div>
+        <ul class="subs" id="sub-experience" hidden><li><button class="chip" data-go="experience" data-pg="0">OJT</button></li><li><button class="chip" data-go="experience" data-pg="1">Work immersion</button></li></ul>
+      </li>
+      <li>
+        <div class="room-row"><a href="#projects"><span class="num" aria-hidden="true">3</span><span>The scroll hall<small>Projects</small></span></a><button class="sub-tg" aria-expanded="false" aria-controls="sub-projects"><span class="sr-only">Pages in The scroll hall</span></button></div>
+        <ul class="subs" id="sub-projects" hidden><li><button class="chip" data-go="projects" data-pg="scroll:tpl-featured" aria-haspopup="dialog">Check8 case study</button></li><li><button class="chip" data-go="projects" data-pg="scroll:tpl-side1" aria-haspopup="dialog">WiSpend case study</button></li><li><button class="chip" data-go="projects" data-pg="scroll:tpl-side2" aria-haspopup="dialog">Freelance work</button></li><li><button class="chip" data-go="projects" data-pg="win:w-certs" aria-haspopup="dialog">Certifications</button></li><li><button class="chip" data-go="projects" data-pg="win:w-contact" aria-haspopup="dialog">Contacts</button></li></ul>
+      </li>
     </ol>
-    <ul class="extras">
-      <li><button data-open="w-certs" aria-haspopup="dialog">Certifications</button></li>
-      <li><button data-open="w-contact" aria-haspopup="dialog">Contacts</button></li>
-      <li><button id="motionBtn" aria-pressed="false">Pause animations</button></li>
-    </ul>
   </div>
 </nav>
 <p class="sr-only" id="roomNews" aria-live="polite"></p>
@@ -996,10 +1144,6 @@ button,a{-webkit-tap-highlight-color:transparent}
   </div>
   <p class="hall-hint">Click a scroll to read it</p>
 
-  <button class="messenger" data-open="w-contact" aria-haspopup="dialog" aria-label="Click me to get in touch: open contacts">
-    <span class="msg-bubble" aria-hidden="true">Click me to get in touch</span>
-    <i class="spr glowy" data-s="messenger" data-px="6" aria-hidden="true"></i>
-  </button>
 
   <ul class="shrines" role="list">
     <li class="shrine">
@@ -1009,6 +1153,7 @@ button,a{-webkit-tap-highlight-color:transparent}
         <i class="spr" data-s="scroll" data-px="6"></i>
       </button>
       <div class="podium" aria-hidden="true"><i class="spr" data-s="podium" data-px="6"></i><span class="plate">WiSpend</span></div>
+      <span class="shelf" aria-hidden="true"></span>
     </li>
     <li class="shrine featured">
       <span class="cs-tag" aria-hidden="true">With case study!</span>
@@ -1021,6 +1166,7 @@ button,a{-webkit-tap-highlight-color:transparent}
         <i class="spr" data-s="scrollGold" data-px="7"></i>
       </button>
       <div class="podium" aria-hidden="true"><i class="spr" data-s="podiumTall" data-px="6"></i><span class="plate">Check8<small>Featured</small></span></div>
+      <span class="shelf" aria-hidden="true"></span>
     </li>
     <li class="shrine">
       <button class="scroll-btn glowy" data-scroll="tpl-side2" aria-haspopup="dialog" aria-label="Read about my freelance work">
@@ -1028,12 +1174,18 @@ button,a{-webkit-tap-highlight-color:transparent}
         <i class="spr" data-s="scroll" data-px="6"></i>
       </button>
       <div class="podium" aria-hidden="true"><i class="spr" data-s="podium" data-px="6"></i><span class="plate">Freelance Work</span></div>
+      <span class="shelf" aria-hidden="true"></span>
     </li>
   </ul>
 
   <button class="showcase" data-open="w-certs" aria-haspopup="dialog" aria-label="Open the certifications showcase, 7 certificates">
     <span class="sc-sign" aria-hidden="true">Certifications</span>
     <i class="spr glowy" data-s="showcase" data-px="6" aria-hidden="true"></i>
+  </button>
+
+  <button class="messenger" data-open="w-contact" aria-haspopup="dialog" aria-label="Click me to get in touch: open contacts">
+    <span class="msg-bubble" aria-hidden="true">Click me to get in touch</span>
+    <i class="spr glowy" data-s="messenger" data-px="6" aria-hidden="true"></i>
   </button>
 </section>
 
@@ -1483,7 +1635,7 @@ button,a{-webkit-tap-highlight-color:transparent}
 <section class="frame" id="w-certs" role="dialog" aria-labelledby="t-certs" tabindex="-1" hidden>
   <div class="bar" tabindex="0" title="Drag to move. Arrow keys move, Shift plus arrows resize."><h2 id="t-certs">Certifications (7)</h2><button class="x" aria-label="Close window">X</button></div>
   <div class="win">
-    <p class="cert-intro">Each certificate opens as a PDF in a new tab.</p>
+    <p class="cert-intro" id="certIntro">Each certificate opens as a PDF in a new tab.</p>
     <ul class="cert-grid">
       <li class="cert">
         <span class="badge" aria-hidden="true"><i class="spr" data-s="medal" data-px="5"></i></span>
@@ -1538,6 +1690,18 @@ button,a{-webkit-tap-highlight-color:transparent}
   </div>
   <div class="grip" aria-hidden="true"></div>
 </section>
+
+<!-- certificate preview on computers; phones open the PDF directly -->
+<div class="cert-view" id="certView" role="dialog" aria-modal="true" aria-labelledby="cvTitle" hidden>
+  <div class="cv-box">
+    <div class="cv-bar">
+      <h2 id="cvTitle">Certificate</h2>
+      <a class="btn cv-open glowy" id="cvOpen" href="#" target="_blank" rel="noopener">Open in new tab<span class="sr-only"> (opens in a new tab)</span></a>
+      <button class="cv-close" id="cvClose">Close X</button>
+    </div>
+    <iframe class="cv-frame" id="cvFrame" title="Certificate preview"></iframe>
+  </div>
+</div>
 
 <section class="frame" id="w-contact" role="dialog" aria-labelledby="t-contact" tabindex="-1" hidden>
   <div class="bar" tabindex="0" title="Drag to move. Arrow keys move, Shift plus arrows resize."><h2 id="t-contact">Contacts</h2><button class="x" aria-label="Close window">X</button></div>
@@ -1686,6 +1850,8 @@ ART.target = (function () {
   return out;
 })();
 ART.barrel = ['..LLLLLL..','.LllllllL.','LKKKKKKKKL','LllLllLllL','LllLllLllL','LllLllLllL','LllLllLllL','LKKKKKKKKL','.LllllllL.','..LLLLLL..'];
+ART.pauseI = ['tt.tt','tt.tt','tt.tt','tt.tt','tt.tt','tt.tt'];
+ART.playI = ['t....','tt...','ttt..','tttt.','ttt..','tt...','t....'];
 ART.map = ['qqqQqqqQ','qrqQqqqQ','qqrQrqqQ','qqqQqrqQ','qqqQqqrQ','qqqQqqqQ'];
 // contact icons
 ART.phone = ['.kkkkkk.','.kttttk.','.kbbbbk.','.kbbbbk.','.kbbbbk.','.kttttk.','.ktkktk.','.kkkkkk.'];
@@ -1802,24 +1968,35 @@ ART.castle = (function () {
   });
 })();
 
-function svg(rows, px) {
+// each sprite is drawn once into a tiny picture, then shown scaled up with crisp pixels
+// (one small image per sprite is much lighter for slow phones than thousands of SVG squares)
+var sprCache = new Map();
+function sprURL(rows) {
+  var url = sprCache.get(rows);
+  if (url) return url;
   var w = rows[0].length, h = rows.length;
-  var s = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w * px + '" height="' + h * px +
-          '" viewBox="0 0 ' + w + ' ' + h + '" shape-rendering="crispEdges" aria-hidden="true">';
+  var c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  var g = c.getContext('2d');
   rows.forEach(function (row, y) {
     for (var x = 0; x < w; x++) {
-      if (PAL[row[x]]) s += '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="' + PAL[row[x]] + '"/>';
+      if (PAL[row[x]]) { g.fillStyle = PAL[row[x]]; g.fillRect(x, y, 1, 1); }
     }
   });
-  return s + '</svg>';
+  url = c.toDataURL('image/png');
+  sprCache.set(rows, url);
+  return url;
+}
+function sprite(rows, px) {
+  return '<img src="' + sprURL(rows) + '" width="' + rows[0].length * px + '" height="' + rows.length * px + '" alt="" draggable="false">';
 }
 function tileBg(el, name, px) {
   var rows = ART[name];
-  el.style.backgroundImage = 'url("data:image/svg+xml;utf8,' + encodeURIComponent(svg(rows, px)) + '")';
+  el.style.backgroundImage = 'url("' + sprURL(rows) + '")';
   el.style.backgroundSize = rows[0].length * px + 'px ' + rows.length * px + 'px';
 }
 document.querySelectorAll('.spr').forEach(function (el) {
-  el.innerHTML = svg(ART[el.dataset.s], +el.dataset.px || 4);
+  el.innerHTML = sprite(ART[el.dataset.s], +el.dataset.px || 4);
 });
 // tiled pixel backgrounds (grass, dirt, bricks, floor)
 document.querySelectorAll('[data-tile]').forEach(function (el) {
@@ -1871,8 +2048,8 @@ function buildArches() {
       p.style.left = (cx - pw / 2) + 'px';
       p.style.width = pw + 'px';
       tileBg(p, 'pillarTile', pw / 16);
-      p.innerHTML = '<i class="spr cap" style="top:' + (ah - 6 * cpx) + 'px">' + svg(ART.capital, cpx) + '</i>' +
-                    '<i class="spr base">' + svg(ART.base, cpx) + '</i>';
+      p.innerHTML = '<i class="spr cap" style="top:' + (ah - 6 * cpx) + 'px">' + sprite(ART.capital, cpx) + '</i>' +
+                    '<i class="spr base">' + sprite(ART.base, cpx) + '</i>';
       box.appendChild(p);
     });
     var ws = 12 * wpx, top = Math.round(ah * 0.42);
@@ -1881,7 +2058,7 @@ function buildArches() {
       web.className = 'web';
       web.style.left = c[1] + 'px';
       web.style.top = top + 'px';
-      web.innerHTML = svg(ART[c[0]], wpx);
+      web.innerHTML = sprite(ART[c[0]], wpx);
       box.appendChild(web);
     });
   });
@@ -1913,7 +2090,8 @@ who.addEventListener('click', function () { setPanels(panels.hidden); });
 var backdrop = document.getElementById('backdrop');
 function lockPage(except, showBackdrop) {
   [].forEach.call(document.body.children, function (el) {
-    if (el !== except && el !== backdrop && el.tagName !== 'SCRIPT' && el.tagName !== 'TEMPLATE') el.inert = true;
+    if (el.tagName === 'SCRIPT' || el.tagName === 'TEMPLATE' || el === backdrop) return;
+    el.inert = el !== except;
   });
   backdrop.hidden = !showBackdrop;
   document.documentElement.style.overflow = 'hidden';
@@ -1941,6 +2119,9 @@ function openScroll(btn) {
   svParch.scrollTop = 0;
   sv.hidden = false;
   lockPage(sv, false);
+  // always start reading from the top, even if the last scroll was left halfway
+  svParch.scrollTop = 0;
+  requestAnimationFrame(function () { svParch.scrollTop = 0; });
   sv.style.setProperty('--h', svParch.offsetHeight + 'px');
   sv.classList.remove('closing');
   if (!isStill()) {
@@ -2054,10 +2235,13 @@ function makePager(box, items, names, label, mq, onShow) {
   nav.className = 'pager';
   nav.setAttribute('role', 'group');
   nav.setAttribute('aria-label', label);
-  nav.innerHTML = '<button type="button" class="pg-btn glowy">Back<span class="sr-only"></span></button>' +
+  // each button names the page it goes to, like "< About me" and "Stack >"
+  nav.innerHTML = '<button type="button" class="pg-btn back glowy"><i class="spr" aria-hidden="true"></i><span class="sr-only">Previous page: </span><span class="pg-name"></span></button>' +
     '<span class="pg-count" aria-hidden="true"></span>' +
-    '<button type="button" class="pg-btn glowy">Next<span class="sr-only"></span></button>' +
+    '<button type="button" class="pg-btn next glowy"><span class="sr-only">Next page: </span><span class="pg-name"></span><i class="spr" aria-hidden="true"></i></button>' +
     '<span class="sr-only" aria-live="polite"></span>';
+  nav.querySelector('.back .spr').innerHTML = sprite(ART.arrowL, 2);
+  nav.querySelector('.next .spr').innerHTML = sprite(ART.arrowR, 2);
   box.appendChild(nav);
   var btns = nav.querySelectorAll('button'), count = nav.querySelector('.pg-count'), news = nav.lastChild;
   var cur = 0;
@@ -2067,33 +2251,35 @@ function makePager(box, items, names, label, mq, onShow) {
     box.classList.toggle('paged', on);
     items.forEach(function (el, i) { el.classList.toggle('pg-off', on && i !== n); });
     if (onShow) onShow(n, on);
+    // at the first or last page that button has nowhere to go, so it steps aside
     btns[0].disabled = n === 0;
     btns[1].disabled = n === items.length - 1;
-    btns[0].lastChild.textContent = n > 0 ? ': ' + names[n - 1] : '';
-    btns[1].lastChild.textContent = n < items.length - 1 ? ': ' + names[n + 1] : '';
+    btns[0].querySelector('.pg-name').textContent = n > 0 ? names[n - 1] : '';
+    btns[1].querySelector('.pg-name').textContent = n < items.length - 1 ? names[n + 1] : '';
     count.textContent = (n + 1) + ' / ' + items.length;
     if (announce) news.textContent = names[n] + ', page ' + (n + 1) + ' of ' + items.length;
   }
+  function go(n, k) {
+    n = Math.min(Math.max(n, 0), items.length - 1);
+    if (n === cur) return;
+    show(n, k !== undefined);
+    if (items[n].scrollTop) items[n].scrollTop = 0;
+    var top = items[n].getBoundingClientRect().top;
+    if (top < 70) scrollBy({ top: top - 90, behavior: 'auto' });
+    if (k !== undefined && btns[k].disabled) btns[1 - k].focus();
+  }
   [-1, 1].forEach(function (d, k) {
-    btns[k].addEventListener('click', function () {
-      var n = Math.min(Math.max(cur + d, 0), items.length - 1);
-      if (n === cur) return;
-      show(n, true);
-      // keep the new page in view, and keep focus on a button that still works
-      var top = items[n].getBoundingClientRect().top;
-      if (top < 70) scrollBy({ top: top - 90, behavior: 'auto' });
-      if (btns[k].disabled) btns[1 - k].focus();
-    });
+    btns[k].addEventListener('click', function () { go(cur + d, k); });
   });
   mq.addEventListener('change', function () { show(cur, false); });
   show(0, false);
-  return { show: show };
+  return { show: show, go: go, get cur() { return cur; } };
 }
-makePager(document.getElementById('heroPanels'), [].slice.call(document.querySelectorAll('#heroPanels .pane')),
-  ['Introduction', 'Portrait'], 'Introduction pages', compact);
+var homePager = makePager(document.getElementById('heroPanels'), [].slice.call(document.querySelectorAll('#heroPanels .pane')),
+  ['Intro', 'Portrait'], 'Introduction pages', compact);
 var bookPages = [].slice.call(book.querySelectorAll('.page'));
-makePager(book.querySelector('.open'), bookPages,
-  bookPages.map(function (pg) { return pg.querySelector('h2').textContent; }), 'Book pages', narrow,
+var bookPager = makePager(book.querySelector('.open'), bookPages,
+  ['About me', 'What I do', 'Highlights', 'At a glance', 'Stack', 'Skills'], 'Book pages', narrow,
   function (n, on) {
     // the pages live in spreads of two, so show the spread that holds this page
     var sp = on ? [].indexOf.call(spreads, bookPages[n].closest('.spread')) : +book.dataset.spread;
@@ -2101,8 +2287,7 @@ makePager(book.querySelector('.open'), bookPages,
     book.dataset.spread = sp;
   });
 var quests = [].slice.call(document.querySelectorAll('.quest'));
-makePager(document.querySelector('.board'), quests,
-  quests.map(function (q) { return q.querySelector('h3').textContent; }), 'Quests', compact);
+var questPager = makePager(document.querySelector('.board'), quests, ['OJT', 'Immersion'], 'Quests', compact);
 
 // windows: open, drag, resize, close
 var zTop = 20, opened = 0;
@@ -2218,9 +2403,16 @@ document.addEventListener('mousemove', function () { document.body.classList.rem
 // dungeon map: a button that shows and hides the list of rooms
 var mapBtn = document.getElementById('mapBtn');
 var mapMenu = document.getElementById('mapMenu');
+function setSubs(t, open) {
+  t.setAttribute('aria-expanded', open ? 'true' : 'false');
+  document.getElementById(t.getAttribute('aria-controls')).hidden = !open;
+}
 function openMap() {
   mapMenu.hidden = false;
   mapBtn.setAttribute('aria-expanded', 'true');
+  // only the room you are in shows its pages, so the map stays short
+  mapMenu.querySelectorAll('.sub-tg').forEach(function (t, i) { setSubs(t, i === whichRoom()); });
+  hideTip(true);
 }
 function closeMap(returnFocus) {
   if (mapMenu.hidden) return;
@@ -2255,6 +2447,47 @@ document.addEventListener('click', function (e) {
   closeMap(false);
   goToRoom(id);
 });
+
+mapMenu.querySelectorAll('.sub-tg').forEach(function (t) {
+  t.addEventListener('click', function () { setSubs(t, t.getAttribute('aria-expanded') !== 'true'); });
+});
+mapMenu.addEventListener('click', function (e) {
+  var c = e.target.closest('[data-go]');
+  if (!c) return;
+  closeMap(false);
+  openPage(c.dataset.go, c.dataset.pg);
+});
+function focusIn(el) {
+  if (!el) return;
+  el.setAttribute('tabindex', '-1');
+  el.focus({ preventScroll: true });
+}
+function openPage(id, pg) {
+  if (id === 'projects') {
+    // jump straight to the hall, then unroll the scroll or open the window
+    tripTo = null;
+    document.getElementById('projects').scrollIntoView({ behavior: 'auto' });
+    var how = pg.split(':');
+    if (how[0] === 'scroll') openScroll(document.querySelector('[data-scroll="' + how[1] + '"]'));
+    else openWin(how[1], document.querySelector(how[1] === 'w-certs' ? '.showcase' : '.messenger'));
+    return;
+  }
+  pg = +pg;
+  goToRoom(id);
+  if (id === 'home') {
+    if (panels.hidden) setPanels(true);
+    homePager.go(pg);
+    focusIn(document.querySelectorAll('#heroPanels .pane')[pg].querySelector('h1,img'));
+  } else if (id === 'about') {
+    openBook(function () {
+      if (narrow.matches) bookPager.go(pg); else turnTo(Math.floor(pg / 2));
+      setTimeout(function () { focusIn(bookPages[pg].querySelector('h2')); }, narrow.matches || isStill() ? 0 : 420);
+    });
+  } else if (id === 'experience') {
+    questPager.go(pg);
+    focusIn(quests[pg].querySelector('h3'));
+  }
+}
 
 // mark the room you are in on the map
 var roomLinks = mapMenu.querySelectorAll('.rooms a');
@@ -2319,6 +2552,14 @@ function stepRoom(d) {
   document.getElementById('roomNews').textContent = 'Now in ' + roomNames[n];
 }
 
+var mapTip = document.getElementById('mapTip'), tipTimer = null;
+function hideTip(forever) {
+  mapTip.hidden = true;
+  clearTimeout(tipTimer);
+  if (forever) try { localStorage.setItem('dale-maptip', 'seen'); } catch (err) {}
+}
+try { if (!localStorage.getItem('dale-maptip')) { mapTip.hidden = false; tipTimer = setTimeout(function () { hideTip(false); }, 12000); } } catch (err) {}
+
 // mouse wheel on bigger screens: one flick moves exactly one floor
 var snapMQ = matchMedia('(min-width:820px) and (min-height:561px)');
 var wheelBusy = false, wheelQuiet = null;
@@ -2357,14 +2598,69 @@ nextBtn.addEventListener('click', function () { stepRoom(1); });
 var motionBtn = document.getElementById('motionBtn');
 function setMotion(paused) {
   document.documentElement.classList.toggle('still', paused);
-  motionBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+  motionBtn.querySelector('.pz-t').textContent = paused ? 'Play' : 'Pause';
+  motionBtn.querySelector('.spr').innerHTML = sprite(paused ? ART.playI : ART.pauseI, 4);
   talk(panels.hidden);
   try { localStorage.setItem('dale-motion', paused ? 'paused' : 'on'); } catch (err) {}
 }
 motionBtn.addEventListener('click', function () {
-  setMotion(motionBtn.getAttribute('aria-pressed') !== 'true');
+  setMotion(!document.documentElement.classList.contains('still'));
 });
 try { if (localStorage.getItem('dale-motion') === 'paused') setMotion(true); } catch (err) {}
+
+// rooms out of view pause their animations
+var sleeper = new IntersectionObserver(function (entries) {
+  entries.forEach(function (en) { en.target.classList.toggle('asleep', !en.isIntersecting); });
+});
+document.querySelectorAll('main > section').forEach(function (sec) { sleeper.observe(sec); });
+// phones with little memory or few cores get the light mode
+if ((navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)) {
+  document.documentElement.classList.add('lite');
+}
+
+// certificates: on a computer, preview the PDF in a pop-up; on a phone, open it directly
+var certView = document.getElementById('certView'), cvFrame = document.getElementById('cvFrame');
+var cvOpen = document.getElementById('cvOpen'), cvTitle = document.getElementById('cvTitle');
+var certLinks = document.querySelectorAll('#w-certs .view'), cvFrom = null;
+var bigScreen = matchMedia('(min-width:820px) and (hover:hover)');
+function certMode() {
+  var pre = bigScreen.matches;
+  document.getElementById('certIntro').textContent = pre ?
+    'Click a certificate to preview it here. You can also open it in a new tab.' : 'Each certificate opens as a PDF in a new tab.';
+  certLinks.forEach(function (a) {
+    var name = a.closest('.cert').querySelector('h3').textContent;
+    a.setAttribute('aria-label', 'View certificate: ' + name + (pre ? ' (opens a preview)' : ' (PDF, opens in a new tab)'));
+    if (pre) a.setAttribute('aria-haspopup', 'dialog'); else a.removeAttribute('aria-haspopup');
+  });
+}
+bigScreen.addEventListener('change', certMode);
+certMode();
+certLinks.forEach(function (a) {
+  a.addEventListener('click', function (e) {
+    if (!bigScreen.matches) return;
+    e.preventDefault();
+    cvFrom = a;
+    cvTitle.textContent = a.closest('.cert').querySelector('h3').textContent;
+    cvOpen.href = a.getAttribute('href');
+    cvFrame.src = a.getAttribute('href') + '#view=FitH';
+    certView.hidden = false;
+    lockPage(certView, false);
+    document.getElementById('cvClose').focus();
+  });
+});
+function closeCert() {
+  if (certView.hidden) return;
+  certView.hidden = true;
+  cvFrame.removeAttribute('src');
+  // back to the certifications window, which stays open
+  lockPage(document.getElementById('w-certs'), true);
+  if (cvFrom) cvFrom.focus();
+}
+document.getElementById('cvClose').addEventListener('click', closeCert);
+certView.addEventListener('click', function (e) { if (e.target === certView) closeCert(); });
+certView.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') { e.stopPropagation(); closeCert(); }
+});
 
 // keep open windows on screen when the browser is resized
 addEventListener('resize', function () {
