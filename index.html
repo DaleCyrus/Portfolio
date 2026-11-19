@@ -925,6 +925,27 @@ button,a{-webkit-tap-highlight-color:transparent}
   .showcase{left:auto;right:3%;top:auto;bottom:calc(var(--fh) - 2px);transform:scale(.75);transform-origin:bottom right}
   .messenger{left:4%;top:auto;bottom:calc(var(--fh) - 2px);transform:scale(1.3);transform-origin:bottom left}
 }
+
+/* "more" hints at the edges of boxes that scroll */
+.more-hint,.less-hint{display:block;position:sticky;z-index:5;pointer-events:none;height:2.6rem;opacity:0;visibility:hidden;transition:opacity .2s}
+.more-hint{bottom:-1px;margin-top:-2.6rem;background:linear-gradient(rgba(239,227,194,0),var(--cream) 75%)}
+.less-hint{top:-1px;margin-bottom:-2.6rem;background:linear-gradient(var(--cream) 25%,rgba(239,227,194,0))}
+.more-hint b,.less-hint b{position:absolute;right:.2rem;font:400 .5rem/1 var(--pix);background:#0b6e66;color:#fff;
+  border:2px solid #000;box-shadow:2px 2px 0 #000;padding:.35rem .5rem;white-space:nowrap}
+.more-hint b{bottom:.2rem;animation:hintbob 1s ease-in-out infinite alternate}
+.less-hint b{top:.2rem}
+@keyframes hintbob{to{transform:translateY(3px)}}
+.can-down > .more-hint,.can-up > .less-hint{opacity:1;visibility:visible}
+/* the hints sit on the very edge of the box, inside its padding, so they never cover the words */
+.page > .more-hint{bottom:-1rem}
+.page > .less-hint{top:-1.1rem}
+.quest > .more-hint{bottom:-1.1rem}
+.quest > .less-hint{top:-1.4rem}
+#svParch > .more-hint,#svParch > .less-hint{height:3rem}
+#svParch > .more-hint{margin-top:-3rem}
+#svParch > .less-hint{margin-bottom:-3rem}
+.win > .more-hint{background:linear-gradient(rgba(15,27,25,0),var(--panel) 75%)}
+.win > .less-hint{background:linear-gradient(var(--panel) 25%,rgba(15,27,25,0))}
 </style>
 </head>
 <body>
@@ -2231,6 +2252,7 @@ function openScroll(btn) {
   var tpl = document.getElementById(btn.dataset.scroll);
   svParch.innerHTML = '';
   svParch.appendChild(tpl.content.cloneNode(true));
+  addHints(svParch);
   var brief = btn.dataset.scroll === 'tpl-side2';
   svParch.classList.toggle('brief', brief);
   svParch.parentNode.classList.toggle('wide', !brief);
@@ -2375,7 +2397,7 @@ function makePager(box, items, names, label, mq, onShow) {
       // the page on show may scroll inside itself, so keyboards can reach it too
       if (on && i === n) {
         el.tabIndex = 0;
-        if (el.tagName !== 'ARTICLE') { el.setAttribute('role', 'region'); el.setAttribute('aria-label', names[i]); }
+        if (el.tagName !== 'ARTICLE') { el.setAttribute('role', 'region'); el.setAttribute('aria-label', names[i] + ' page'); }
       } else {
         el.removeAttribute('tabindex');
         if (el.tagName !== 'ARTICLE') { el.removeAttribute('role'); el.removeAttribute('aria-label'); }
@@ -2475,7 +2497,7 @@ var fitBusy = false;
 function fitAll() {
   if (fitBusy || typeof quests === 'undefined') return;
   fitBusy = true;
-  requestAnimationFrame(function () { fitBusy = false; fitBook(); fitQuests(); fitIntro(); });
+  requestAnimationFrame(function () { fitBusy = false; fitBook(); fitQuests(); fitIntro(); if (typeof updAllHints === 'function') updAllHints(); });
 }
 var fitTimer = null;
 addEventListener('resize', function () { clearTimeout(fitTimer); fitTimer = setTimeout(fitAll, 150); });
@@ -2511,6 +2533,71 @@ function bookTour(d) {
 }
 markRead(0);
 if (!narrow.matches) markRead(1);
+
+// "more" hints: boxes that can scroll show a fade and a small tag at the edge that has more to read
+function addHints(box) {
+  if (box.querySelector(':scope > .more-hint')) { updHints(box); return; }
+  var up = document.createElement('span'), down = document.createElement('span');
+  up.className = 'less-hint'; down.className = 'more-hint';
+  up.setAttribute('aria-hidden', 'true'); down.setAttribute('aria-hidden', 'true');
+  up.innerHTML = '<b>&#9650;</b>';
+  down.innerHTML = '<b>&#9660; more</b>';
+  box.insertBefore(up, box.firstChild);
+  box.appendChild(down);
+  if (!box._hinted) {
+    box._hinted = true;
+    box.addEventListener('scroll', function () { updHints(box); }, { passive: true });
+    if (window.ResizeObserver) new ResizeObserver(function () { updHints(box); }).observe(box);
+  }
+  updHints(box);
+}
+function updHints(box) {
+  var more = box.scrollHeight - box.clientHeight;
+  box.classList.toggle('can-down', more > 6 && box.scrollTop < more - 6);
+  box.classList.toggle('can-up', more > 6 && box.scrollTop > 6);
+  // a box that scrolls must be reachable with the keyboard, so it can be scrolled with the arrow keys
+  if (box === svParch || box.classList.contains('win')) return;
+  if (more > 6 && !box.hasAttribute('tabindex')) {
+    box.tabIndex = 0; box._tabbed = true;
+    if (box.tagName !== 'ARTICLE' && !box.hasAttribute('role')) {
+      var h = box.querySelector('h1,h2,h3');
+      box.setAttribute('role', 'region'); box.setAttribute('aria-label', (h ? h.textContent : 'Scrollable text') + ' page');
+      box._roled = true;
+    }
+  } else if (more <= 6 && box._tabbed && !box.classList.contains('pg-off')) {
+    box.removeAttribute('tabindex'); box._tabbed = false;
+    if (box._roled) { box.removeAttribute('role'); box.removeAttribute('aria-label'); box._roled = false; }
+  }
+}
+var hintBoxes = document.querySelectorAll('.page, .quest, .intro-pane, .win');
+hintBoxes.forEach(addHints);
+function updAllHints() { hintBoxes.forEach(updHints); }
+addEventListener('resize', function () { setTimeout(updAllHints, 200); });
+
+// touch: a swipe that starts scrolling inside a box stays in that box when it reaches the end
+var touchBox = null, touchY = 0;
+function scrollBoxOf(el) {
+  for (; el && el !== document.body; el = el.parentElement) {
+    var oy = getComputedStyle(el).overflowY;
+    if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) return el;
+  }
+  return null;
+}
+document.addEventListener('touchstart', function (e) {
+  touchBox = scrollBoxOf(e.target);
+  touchY = e.touches[0].clientY;
+}, { passive: true });
+document.addEventListener('touchmove', function (e) {
+  if (!touchBox || touchBox._held) return;
+  var dy = touchY - e.touches[0].clientY;
+  if (Math.abs(dy) < 4) return;
+  if (canScrollInside(touchBox, dy)) { touchBox.style.overscrollBehaviorY = 'contain'; touchBox._held = true; }
+  else touchBox = null;
+}, { passive: true });
+document.addEventListener('touchend', function () {
+  if (touchBox) { touchBox.style.overscrollBehaviorY = ''; touchBox._held = false; }
+  touchBox = null;
+});
 
 // windows: open, drag, resize, close
 var zTop = 20, opened = 0;
@@ -2785,7 +2872,7 @@ try { if (!localStorage.getItem('dale-maptip')) { mapTip.hidden = false; tipTime
 
 // mouse wheel on bigger screens: one flick moves exactly one floor
 var snapMQ = matchMedia('(min-width:820px) and (min-height:561px)');
-var wheelBusy = false, wheelQuiet = null;
+var wheelBusy = false, wheelQuiet = null, innerAt = 0;
 function canScrollInside(el, dy) {
   for (; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
     var oy = getComputedStyle(el).overflowY;
@@ -2799,7 +2886,9 @@ function canScrollInside(el, dy) {
 window.addEventListener('wheel', function (e) {
   if (!snapMQ.matches || e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
   if (document.documentElement.style.overflow === 'hidden') return;
-  if (canScrollInside(e.target, e.deltaY)) return;
+  if (canScrollInside(e.target, e.deltaY)) { innerAt = Date.now(); return; }
+  // the box just ran out of room: swallow the rest of this flick, and only a fresh flick (after a short pause) changes floors
+  if (Date.now() - innerAt < 450) { innerAt = Date.now(); e.preventDefault(); return; }
   // a room taller than the screen scrolls normally until you reach its edge
   var r = document.getElementById(roomIds[whichRoom()]).getBoundingClientRect();
   if (tripTo === null && r.height > innerHeight + 40) {
