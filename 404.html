@@ -38,15 +38,15 @@ h1 b{display:block;font-size:.42em;color:#0b6e66;margin-bottom:.8rem;text-shadow
 .loot{position:absolute;z-index:2;left:0;right:0;bottom:calc(var(--fh) - 2px);display:flex;justify-content:center;align-items:flex-end;gap:clamp(.4rem,3vw,2.4rem)}
 .web-c{z-index:4;opacity:.9}
 .loot .chest{filter:drop-shadow(0 0 10px rgba(255,210,63,.25))}
-.loot .rat{animation:sniff 1.6s steps(2) infinite}
+.loot .rat{animation:sniff 1.6s ease-in-out infinite;will-change:transform}
 @keyframes sniff{50%{transform:translateX(-4px)}}
-.fa{animation:fa .5s steps(1) infinite}
-.fb{animation:fb .5s steps(1) infinite}
+.fa{animation:fa .32s steps(1) infinite}
+.fb{animation:fb .32s steps(1) infinite}
 @keyframes fa{50%{visibility:hidden}}
 @keyframes fb{0%{visibility:hidden}50%{visibility:visible}}
 .flick{position:absolute;line-height:0}
 .flick .spr{position:absolute;left:0;top:0}
-.halo{position:absolute;left:50%;top:30%;width:150px;height:150px;margin:-75px 0 0 -75px;background:radial-gradient(closest-side,rgba(255,159,28,.35),transparent);animation:glow 1s steps(2) infinite alternate}
+.halo{position:absolute;left:50%;top:30%;width:150px;height:150px;margin:-75px 0 0 -75px;background:radial-gradient(closest-side,rgba(255,159,28,.35),transparent);animation:glow 1s ease-in-out infinite alternate;will-change:opacity}
 @keyframes glow{to{opacity:.55}}
 @media (max-width:640px){
   :root{--fh:80px}
