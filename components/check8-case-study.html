@@ -1,0 +1,181 @@
+<!-- Check8 case study (featured): loaded into the scroll viewer by js/dialogs.js when its scroll is opened -->
+<div class="sv-body cs">
+  <h2 id="svTitle">Check8: case study</h2>
+  <p class="by">QR clearance portal for Gordon College. By Dale Cyrus D. Edrosalan, co-created with Gian Karlo C. Reguindin.</p>
+  <p class="cs-links">
+    <a class="cs-link" href="https://www.figma.com/design/wAT7RW50UdD6mVIZp0bBeQ/CHECK8-%E2%80%94-Low-Fidelity-Wireframes?node-id=0-1&amp;t=q7MvNclXIRYty9rZ-1" target="_blank" rel="noopener">Low-fidelity wireframes in Figma<span class="sr-only"> (opens in a new tab)</span></a>
+  </p>
+  <p class="toc-lbl" aria-hidden="true">Jump to a section:</p>
+  <ul class="toc" aria-label="Jump to a section">
+    <li><a href="#cs-overview">Overview</a></li>
+    <li><a href="#cs-user">The user</a></li>
+    <li><a href="#cs-design">Starting the design</a></li>
+    <li><a href="#cs-study">Usability study</a></li>
+    <li><a href="#cs-refine">Refining</a></li>
+    <li><a href="#cs-takeaways">Takeaways</a></li>
+    <li><a href="#cs-next">Next steps</a></li>
+  </ul>
+
+  <!-- ===== project overview ===== -->
+  <h3 id="cs-overview">Project overview</h3>
+  <div class="pair">
+    <div>
+      <h4>The product</h4>
+      <p>Check8 is a web-based QR clearance portal for Gordon College Computer Science students. It replaces paper clearance slips with online tracking: students check their pending items on their phone and clear each station with one scan.</p>
+      <h4>Target users</h4>
+      <p>Gordon College CCS students, lab staff, library personnel, student council officers, and faculty signatories.</p>
+      <h4>Project duration</h4>
+      <p>April 2026 to November 2026.</p>
+    </div>
+    <figure>
+      <img class="site" src="assets/images/check8/login.jpg" alt="Check8 sign-in screen with Gordon College branding, institutional email login, and Secure, Fast, Paperless highlights" width="700" height="781" loading="lazy">
+      <figcaption>The Check8 sign-in screen.</figcaption>
+    </figure>
+  </div>
+  <div class="pair">
+    <div><h4>The problem</h4><p>Every semester, students wait in long lines for paper signatures, and losing the slip forces them to start over.</p></div>
+    <div><h4>The goal</h4><p>Show cleared and pending stations on one phone screen, with a scannable QR pass for fast sign-offs.</p></div>
+  </div>
+  <h4>The team and my role</h4>
+  <div class="cards">
+    <div><b>Implementation Lead (me)</b>I led the build of the app: the clearance workflows, the QR pass and verification, and the student, instructor, and admin dashboards, and I kept the code in our shared team repo working together.</div>
+    <div><b>Requirements and Documentation Lead (me)</b>I turned the clearance process at the labs, library, council, and dean's office into clear requirements and user flows, and wrote the project documentation.</div>
+    <div><b>Project Manager</b>Gian Karlo C. Reguindin planned the work, set priorities, and kept the team on schedule.</div>
+  </div>
+  <ul class="ink-chips"><li>JavaScript</li><li>Node.js</li><li>Express</li><li>HTML5 and CSS3</li><li>QR Code API</li><li>Figma</li></ul>
+
+  <!-- ===== understanding the user ===== -->
+  <h3 id="cs-user">Understanding the user</h3>
+  <h4>User research summary</h4>
+  <p>We interviewed 6 BSCS students and 2 office staff. Students could not see which items were still missing, and staff disliked looking up records by hand in binders.</p>
+  <h4>Pain points</h4>
+  <div class="cards">
+    <div><b>1. Waiting in line blind</b>Students wait 30 minutes before learning an item is missing, so the office checklist sits front and center.</div>
+    <div><b>2. Lost paper slips</b>Paper forms tear or go missing during finals week. An online QR pass can't be lost.</div>
+    <div><b>3. Vague "Pending" labels</b>Unexplained holds confuse students, so a short instructor note sits beside each pending item.</div>
+    <div><b>4. Slow record lookups</b>Checking paper lists wastes staff time, so live QR scanning comes with a manual Student ID lookup.</div>
+  </div>
+  <h4>Persona and problem statement</h4>
+  <div class="pair">
+    <div class="persona">
+      <p class="p-name">Marco Reyes, 21 <small>(an illustrative persona based on our target users)</small></p>
+      <p><b>Who:</b> a graduating 4th-year BSCS student from Olongapo City and the eldest sibling supporting his family.</p>
+      <p><b>Goals:</b> see every clearance station on one phone screen, show a scannable QR pass for quick sign-offs, and know why a station is pending before lining up.</p>
+      <p><b>Frustrations:</b> crumpled or lost paper slips, waiting in line before finding out something is missing, and not knowing which office is holding up his clearance.</p>
+      <p><b>Quote:</b> "Chasing paper signatures across campus during finals week wastes hours when nobody tells you what's missing."</p>
+    </div>
+    <p class="statement">Marco is a 4th-year BSCS student who needs online clearance tracking and QR sign-offs because paper slips get lost and waiting in line without knowing what's missing wastes his study time.</p>
+  </div>
+  <h4>User journey map</h4>
+  <ol class="journey">
+    <li><b>Checks his status</b><span>Opens Check8 to see which offices are left. Unsure which desk to visit first.</span><em>Opportunity: clear notes beside each pending item.</em></li>
+    <li><b>Walks to the desk</b><span>Heads to the lab or office through crowded finals-week hallways.</span><em>Opportunity: obvious Cleared and Pending badges.</em></li>
+    <li><b>Shows his QR pass</b><span>Expects a quick scan, but dim phone screens make scanners struggle.</span><em>Opportunity: a high-contrast white card around the QR.</em></li>
+    <li><b>Gets cleared</b><span>Relieved, but wonders when the approval went through.</span><em>Opportunity: a date and time stamp on every sign-off.</em></li>
+  </ol>
+
+  <!-- ===== starting the design ===== -->
+  <h3 id="cs-design">Starting the design</h3>
+  <h4>Paper wireframes</h4>
+  <p>Our first sketches split the app into two sides: a mobile Student Clearance Pass and a focused Officer Verification Screen.</p>
+  <h4>Low-fidelity prototype</h4>
+  <p>A six-screen flow in Figma: Login, Student Dashboard, Instructor Dashboard, QR Verification, Event Payments, and Admin Dashboard.</p>
+  <figure>
+    <img class="site" src="assets/images/check8/lofi.jpg" alt="Check8 low-fidelity wireframes: Login, Admin Dashboard, Instructor Dashboard, QR Verification, Event Payments, and Student Dashboard" width="1024" height="460" loading="lazy">
+    <figcaption>The six low-fidelity screens.</figcaption>
+  </figure>
+  <p><a class="cs-link" href="https://www.figma.com/design/wAT7RW50UdD6mVIZp0bBeQ/CHECK8-%E2%80%94-Low-Fidelity-Wireframes?node-id=0-1&amp;t=q7MvNclXIRYty9rZ-1" target="_blank" rel="noopener">Open the wireframes in Figma<span class="sr-only"> (opens in a new tab)</span></a></p>
+  <h4>User flow</h4>
+  <ol class="flow">
+    <li>Sign in</li><li>Check pending offices</li><li>Show QR pass</li><li>Officer scans or looks up ID</li><li>Status updates with a timestamp</li>
+  </ol>
+
+  <!-- ===== usability study ===== -->
+  <h3 id="cs-study">Usability study: findings</h3>
+  <p>We ran pilot tests with 4 classmates over two rounds.</p>
+  <div class="cards">
+    <div><b>Round 1</b>
+      <ol class="finds">
+        <li>Status colors alone were unclear, so they needed Cleared and Pending text labels.</li>
+        <li>The camera scanner needed a manual Student ID lookup as a backup.</li>
+        <li>Instructor notes needed to sit right next to the pending rows.</li>
+      </ol>
+    </div>
+    <div><b>Round 2</b>
+      <ol class="finds">
+        <li>The QR code needed a bright white card to scan reliably in low light.</li>
+        <li>Students and instructors needed separate views, each with only their own tools.</li>
+        <li>Approvals needed timestamps for a clear record.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ===== refining the design ===== -->
+  <h3 id="cs-refine">Refining the design</h3>
+  <h4>Mockups: before and after the usability study</h4>
+  <p><b>High-contrast QR pass.</b> We put the QR code on a white card with the student's name, ID, and scan status so cameras can read it reliably.</p>
+  <div class="ba">
+    <figure>
+      <img class="site" src="assets/images/check8/before-qr.jpg" alt="Before: a low-contrast QR code on a dark card background" width="800" height="500" loading="lazy">
+      <figcaption><b>Before:</b> a dark QR card with no bright border, hard to scan in low light.</figcaption>
+    </figure>
+    <figure>
+      <img class="site narrow-shot" src="assets/images/check8/after-qr.jpg" alt="After: Check8 Verification Pass with a high-contrast white QR code, student name, ID, and Ready to scan status" width="346" height="581" loading="lazy">
+      <figcaption><b>After:</b> a bright white Verification Pass card.</figcaption>
+    </figure>
+  </div>
+  <p><b>Status labels beyond color.</b> We replaced plain color dots with Cleared and Pending badges, a progress bar, and instructor notes.</p>
+  <div class="ba">
+    <figure>
+      <img class="site" src="assets/images/check8/before-status.jpg" alt="Before: clearance list with small color dots and no text labels" width="800" height="500" loading="lazy">
+      <figcaption><b>Before:</b> unlabeled color dots left students guessing.</figcaption>
+    </figure>
+    <figure>
+      <img class="site" src="assets/images/check8/after-status.jpg" alt="After: clearance status table with Cleared and Pending badges, a progress bar, and instructor notes" width="583" height="381" loading="lazy">
+      <figcaption><b>After:</b> text badges, progress, and notes.</figcaption>
+    </figure>
+  </div>
+
+  <h4>Main mockups</h4>
+  <div class="shots web-grid">
+    <figure><img class="site" src="assets/images/check8/student.jpg" alt="Student Dashboard with enrolled courses, Cleared and Pending status with notes, a progress bar, and a personal QR code" width="1024" height="546" loading="lazy"><figcaption>Student dashboard and QR pass</figcaption></figure>
+    <figure><img class="site" src="assets/images/check8/instructor.jpg" alt="Instructor Dashboard with assigned class sections, pending and cleared counts, and a QR Verification shortcut" width="1024" height="546" loading="lazy"><figcaption>Instructor dashboard</figcaption></figure>
+    <figure><img class="site" src="assets/images/check8/qr-verify.jpg" alt="Clearance Validation screen with a course selector, live camera QR scanner, and manual student token backup" width="1024" height="546" loading="lazy"><figcaption>QR verification</figcaption></figure>
+    <figure><img class="site" src="assets/images/check8/events.jpg" alt="Event Payments screen with a student list, required and paid amounts, and a payment form" width="1024" height="545" loading="lazy"><figcaption>Event payments</figcaption></figure>
+    <figure><img class="site" src="assets/images/check8/admin.jpg" alt="Admin Dashboard with student records, CSV and SQLite import, groups and classes, and course management" width="1024" height="526" loading="lazy"><figcaption>Admin dashboard</figcaption></figure>
+    <figure><img class="site" src="assets/images/check8/login.jpg" alt="Check8 sign-in screen" width="700" height="781" loading="lazy"><figcaption>Sign in</figcaption></figure>
+  </div>
+
+  <h4>High-fidelity prototype</h4>
+  <p>Check8 was built as a working department portal in our team repository, with every screen above running in the browser.</p>
+
+  <h4>Accessibility considerations</h4>
+  <div class="cards">
+    <div><b>1. Words alongside color</b>Status pills pair Cleared and Pending text with distinct borders, so no one relies on color.</div>
+    <div><b>2. Thumb-friendly targets</b>Buttons and tabs are sized for easy one-handed taps on a phone.</div>
+    <div><b>3. Clean stacking on small screens</b>Tables and QR cards stack vertically with no sideways scrolling.</div>
+  </div>
+
+  <!-- ===== takeaways ===== -->
+  <h3 id="cs-takeaways">Takeaways</h3>
+  <h4>Impact</h4>
+  <p>Check8 gives the department a dedicated clearance system that replaces fragile paper slips with trackable QR verification.</p>
+  <h4>What I learned</h4>
+  <ul class="learn">
+    <li>Writing the requirements first made building faster. Once each office's steps were mapped into clear states, the code mostly followed.</li>
+    <li>Leading implementation in a shared repo taught me to split work into small pieces and merge often so teammates don't block each other.</li>
+    <li>Every automated step needs a manual backup. The Student ID lookup saved scans whenever a camera or screen failed.</li>
+    <li>Good documentation helps the whole team, not just graders. It kept everyone using the same names for the same features.</li>
+  </ul>
+
+  <!-- ===== next steps ===== -->
+  <h3 id="cs-next">Next steps</h3>
+  <div class="cards">
+    <div><b>1. Printable summary</b>Export a clean PDF once every station is signed off.</div>
+    <div><b>2. Office hours indicator</b>Show when each signatory's desk is open.</div>
+    <div><b>3. Public repository</b>Link the finished team repository once it is approved for release.</div>
+  </div>
+
+  <h3>Let's connect</h3>
+  <p>Want to see more or work together? Email <a href="mailto:dalecyrus12@gmail.com">dalecyrus12@gmail.com</a> or find me on <a href="https://github.com/DaleCyrus" target="_blank" rel="noopener">GitHub<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+</div>

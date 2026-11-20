@@ -5,60 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Error 404: Room not found | Dale Cyrus D. Edrosalan</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/icons/favicon-32.png" sizes="32x32" type="image/png">
 <meta name="theme-color" content="#0a2a33">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
-<style>
-:root{--pix:"Press Start 2P",monospace;--body:"Pixelify Sans",system-ui,sans-serif;--teal:#2dd4bf;--ink:#e8f1f2;--cream:#efe3c2;--wood:#6b3a1c;--fh:110px}
-*{box-sizing:border-box;margin:0}
-html,body{height:100%}
-body{min-height:100svh;background:#262b36;color:var(--ink);font-family:var(--body);overflow:hidden}
-.room{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem calc(var(--fh) + 170px);text-align:center}
-.tile,.floor{position:absolute;left:0;right:0;image-rendering:pixelated}
-.tile{inset:0}
-.floor{bottom:0;height:var(--fh);border-top:6px solid #000}
-.shade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 35%,rgba(0,0,0,.7))}
-.spr{display:inline-block;line-height:0}
-.spr img{image-rendering:pixelated}
-.p{position:absolute;line-height:0}
-.on-floor{bottom:calc(var(--fh) - 2px)}
-.msg{position:relative;z-index:3;background:var(--cream);color:#2b2116;border:6px solid var(--wood);
-  box-shadow:0 0 0 4px #000,inset 0 0 0 3px #9a5b2e,10px 10px 0 4px #000;padding:2rem 2rem 1.8rem;max-width:34rem}
-h1{font:400 clamp(1.6rem,6vw,3.2rem)/1.2 var(--pix);color:#a3172d;text-shadow:4px 4px 0 rgba(43,33,22,.25);letter-spacing:.04em}
-h1 b{display:block;font-size:.42em;color:#0b6e66;margin-bottom:.8rem;text-shadow:none}
-.msg p{font-size:1.25rem;line-height:1.45;margin:1.1rem 0 1.5rem}
-.btn{display:inline-block;font:400 .75rem/1.4 var(--pix);background:var(--teal);color:#05201c;border:4px solid #000;box-shadow:4px 4px 0 #000;
-  padding:.9rem 1.1rem;text-decoration:none;min-height:44px}
-.btn:hover{background:#5eead4}
-.btn:active{transform:translate(4px,4px);box-shadow:none}
-.btn:focus-visible{outline:4px solid #0b6e66;outline-offset:4px}
-.loot{position:absolute;z-index:2;left:0;right:0;bottom:calc(var(--fh) - 2px);display:flex;justify-content:center;align-items:flex-end;gap:clamp(.4rem,3vw,2.4rem)}
-.web-c{z-index:4;opacity:.9}
-.loot .chest{filter:drop-shadow(0 0 10px rgba(255,210,63,.25))}
-.loot .rat{animation:sniff 1.6s ease-in-out infinite;will-change:transform}
-@keyframes sniff{50%{transform:translateX(-4px)}}
-.fa{animation:fa .32s steps(1) infinite}
-.fb{animation:fb .32s steps(1) infinite}
-@keyframes fa{50%{visibility:hidden}}
-@keyframes fb{0%{visibility:hidden}50%{visibility:visible}}
-.flick{position:absolute;line-height:0}
-.flick .spr{position:absolute;left:0;top:0}
-.halo{position:absolute;left:50%;top:30%;width:150px;height:150px;margin:-75px 0 0 -75px;background:radial-gradient(closest-side,rgba(255,159,28,.35),transparent);animation:glow 1s ease-in-out infinite alternate;will-change:opacity}
-@keyframes glow{to{opacity:.55}}
-@media (max-width:640px){
-  :root{--fh:80px}
-  .room{padding-bottom:calc(var(--fh) + 120px)}
-  .loot{transform:scale(.5);transform-origin:bottom center}
-  .msg{padding:1.5rem 1.2rem 1.4rem}
-  .msg p{font-size:1.1rem}
-  .hide-sm{display:none}
-}
-@media (max-height:520px){ .loot,.hide-sm{display:none} .room{padding-bottom:calc(var(--fh) + 1rem)} }
-@media (prefers-reduced-motion:reduce){ .fa,.fb,.halo,.loot .rat{animation:none} .fb{display:none} }
-</style>
+<link rel="stylesheet" href="/css/404.css">
+<script src="/js/404.js" defer></script>
 </head>
 <body>
 <main class="room">
@@ -66,23 +20,60 @@ h1 b{display:block;font-size:.42em;color:#0b6e66;margin-bottom:.8rem;text-shadow
   <div class="floor" data-tile="floor" data-px="4" aria-hidden="true"></div>
   <div class="shade" aria-hidden="true"></div>
   <div aria-hidden="true">
-    <i class="p spr" data-s="web" data-px="6" style="top:0;left:0"></i>
-    <i class="p spr" data-s="webR" data-px="6" style="top:0;right:0"></i>
-    <i class="p spr" data-s="roundWeb" data-px="4" style="top:0;left:22%"></i>
-    <i class="p spr" data-s="roundWebSpider" data-px="4" style="top:0;right:20%"></i>
-    <i class="p spr hide-sm" data-s="roundWebFlat" data-px="5" style="top:46%;left:4%"></i>
-    <i class="p spr hide-sm" data-s="roundWebFlat" data-px="4" style="top:58%;right:5%"></i>
-    <i class="p spr" data-s="web" data-px="3" style="bottom:calc(var(--fh) + 4px);left:0;transform:scaleY(-1)"></i>
-    <i class="p spr" data-s="webR" data-px="3" style="bottom:calc(var(--fh) + 4px);right:0;transform:scaleY(-1)"></i>
-    <span class="flick hide-sm" style="top:30%;left:12%"><span class="halo"></span><i class="spr fa" data-s="torchA" data-px="7"></i><i class="spr fb" data-s="torchB" data-px="7"></i></span>
-    <span class="flick hide-sm" style="top:30%;right:12%"><span class="halo"></span><i class="spr fa" data-s="torchA" data-px="7"></i><i class="spr fb" data-s="torchB" data-px="7"></i></span>
-    <i class="p spr on-floor hide-sm" data-s="skull" data-px="5" style="left:6%"></i>
-    <i class="p spr on-floor hide-sm" data-s="bone" data-px="5" style="right:6%"></i>
+    <i class="p spr spot-web-1" data-s="web" data-px="6"></i>
+    <i class="p spr spot-web-r-1" data-s="webR" data-px="6"></i>
+    <i class="p spr spot-round-web-1" data-s="roundWeb" data-px="4"></i>
+    <i class="p spr spot-round-web-spider-1" data-s="roundWebSpider" data-px="4"></i>
+    <i class="p spr hide-sm spot-round-web-flat-1" data-s="roundWebFlat" data-px="5"></i>
+    <i class="p spr hide-sm spot-round-web-flat-2" data-s="roundWebFlat" data-px="4"></i>
+    <i class="p spr spot-web-2" data-s="web" data-px="3"></i>
+    <i class="p spr spot-web-r-2" data-s="webR" data-px="3"></i>
+    <span class="flick hide-sm spot-torch-1"><span class="halo"></span><i class="spr fa" data-s="torchA" data-px="7"></i><i class="spr fb" data-s="torchB" data-px="7"></i></span>
+    <span class="flick hide-sm spot-torch-2"><span class="halo"></span><i class="spr fa" data-s="torchA" data-px="7"></i><i class="spr fb" data-s="torchB" data-px="7"></i></span>
+    <i class="p spr on-floor hide-sm spot-skull-1" data-s="skull" data-px="5"></i>
+    <i class="p spr on-floor hide-sm spot-bone-1" data-s="bone" data-px="5"></i>
   </div>
 
   <div class="msg">
-    <i class="p spr web-c" data-s="web" data-px="4" style="top:-4px;left:-4px" aria-hidden="true"></i>
-    <i class="p spr web-c" data-s="webR" data-px="4" style="top:-4px;right:-4px" aria-hidden="true"></i>
+    <i class="p spr web-c spot-web-3" data-s="web" data-px="4" aria-hidden="true"></i>
+    <i class="p spr web-c spot-web-r-3" data-s="webR" data-px="4" aria-hidden="true"></i>
+    <h1><b>Empty chest!</b>ERROR 404</h1>
+    <p>This room was looted long ago. The page you are looking for isn't here, or it moved somewhere else in the dungeon.</p>
+    <a class="btn" href="/">Back to the surface</a>
+  </div>
+
+  <div class="loot" aria-hidden="true">
+    <i class="spr" data-s="bonePile" data-px="6"></i>
+    <i class="spr" data-s="spikes" data-px="7"></i>
+    <i class="spr chest" data-s="chestOpen" data-px="7"></i>
+    <i class="spr" data-s="spikes" data-px="7"></i>
+    <i class="spr rat" data-s="rat" data-px="7"></i>
+  </div>
+</main>
+</head>
+<body>
+<main class="room">
+  <div class="tile" data-tile="brick" data-px="4" aria-hidden="true"></div>
+  <div class="floor" data-tile="floor" data-px="4" aria-hidden="true"></div>
+  <div class="shade" aria-hidden="true"></div>
+  <div aria-hidden="true">
+    <i class="p spr spot-web-4" data-s="web" data-px="6"></i>
+    <i class="p spr spot-web-r-4" data-s="webR" data-px="6"></i>
+    <i class="p spr spot-round-web-2" data-s="roundWeb" data-px="4"></i>
+    <i class="p spr spot-round-web-spider-2" data-s="roundWebSpider" data-px="4"></i>
+    <i class="p spr hide-sm spot-round-web-flat-3" data-s="roundWebFlat" data-px="5"></i>
+    <i class="p spr hide-sm spot-round-web-flat-4" data-s="roundWebFlat" data-px="4"></i>
+    <i class="p spr spot-web-5" data-s="web" data-px="3"></i>
+    <i class="p spr spot-web-r-5" data-s="webR" data-px="3"></i>
+    <span class="flick hide-sm spot-torch-3"><span class="halo"></span><i class="spr fa" data-s="torchA" data-px="7"></i><i class="spr fb" data-s="torchB" data-px="7"></i></span>
+    <span class="flick hide-sm spot-torch-4"><span class="halo"></span><i class="spr fa" data-s="torchA" data-px="7"></i><i class="spr fb" data-s="torchB" data-px="7"></i></span>
+    <i class="p spr on-floor hide-sm spot-skull-2" data-s="skull" data-px="5"></i>
+    <i class="p spr on-floor hide-sm spot-bone-2" data-s="bone" data-px="5"></i>
+  </div>
+
+  <div class="msg">
+    <i class="p spr web-c spot-web-6" data-s="web" data-px="4" aria-hidden="true"></i>
+    <i class="p spr web-c spot-web-r-6" data-s="webR" data-px="4" aria-hidden="true"></i>
     <h1><b>Empty chest!</b>ERROR 404</h1>
     <p>This room was looted long ago. The page you are looking for isn't here, or it moved somewhere else in the dungeon.</p>
     <a class="btn" href="/">Back to the surface</a>

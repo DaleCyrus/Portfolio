@@ -1,0 +1,224 @@
+<!-- WiSpend case study: loaded into the scroll viewer by js/dialogs.js when its scroll is opened -->
+<div class="sv-body cs">
+  <h2 id="svTitle">WiSpend: case study</h2>
+  <p class="by">By Dale Cyrus D. Edrosalan, solo project</p>
+  <p class="cs-links">
+    <a class="cs-link" href="https://github.com/DaleCyrus/wispend" target="_blank" rel="noopener">GitHub repository<span class="sr-only"> (opens in a new tab)</span></a>
+    <a class="cs-link" href="https://www.figma.com/design/162yVk8XIPhpMjG2fkFgOM/Untitled?node-id=22-2&amp;p=f&amp;t=wl0QagsSSxXllN4f-0" target="_blank" rel="noopener">Figma designs<span class="sr-only"> (opens in a new tab)</span></a>
+  </p>
+  <p class="toc-lbl" aria-hidden="true">Jump to a section:</p>
+  <ul class="toc" aria-label="Jump to a section">
+    <li><a href="#cs-overview">Overview</a></li>
+    <li><a href="#cs-user">The user</a></li>
+    <li><a href="#cs-design">Starting the design</a></li>
+    <li><a href="#cs-study">Usability study</a></li>
+    <li><a href="#cs-refine">Refining</a></li>
+    <li><a href="#cs-takeaways">Takeaways</a></li>
+    <li><a href="#cs-next">Next steps</a></li>
+  </ul>
+
+  <!-- ===== project overview ===== -->
+  <h3 id="cs-overview">Project overview</h3>
+  <div class="pair">
+    <div>
+      <h4>The product</h4>
+      <p>WiSpend is an offline-first Android expense tracker built with React Native. You type what you bought and how much, and a K-Nearest Neighbors (KNN) model suggests the category from your own past spending, with a confidence score you can accept or change.</p>
+      <p>It is made for students on an allowance, young professionals, and low-income earners who want to see where their money goes without linking a bank account.</p>
+      <h4>Project duration</h4>
+      <p>April to May 2026, in seven one-week sprints.</p>
+    </div>
+    <figure class="shots two">
+      <img src="assets/images/wispend/predict-light.jpg" alt="WiSpend New Expense screen in light mode, predicting Food at 60 percent confidence for a 199 peso Jollibee purchase" width="540" height="755" loading="lazy">
+      <img src="assets/images/wispend/predict-dark.jpg" alt="The same New Expense prediction screen in dark mode" width="540" height="755" loading="lazy">
+      <figcaption>The KNN prediction in light and dark mode.</figcaption>
+    </figure>
+  </div>
+  <div class="pair">
+    <div><h4>The problem</h4><p>Logging every expense by hand is slow, and sorting each one into a category is tedious, so most people quit within weeks. Nothing warns them before their money runs out.</p></div>
+    <div><h4>The goal</h4><p>Make logging take seconds, sort expenses automatically while showing why, warn users before the budget runs out, and keep their data private and usable offline.</p></div>
+  </div>
+  <div class="pair">
+    <div><h4>My role</h4><p>Solo designer and developer for CSC221A/L Application Development and Emerging Technologies at Gordon College, AY 2025-2026.</p></div>
+    <div><h4>Responsibilities</h4><p>User research, wireframes and mockups in Figma, the React Native app, the KNN engine, the SQLite database design, the Node.js and Express backend on Railway, testing, and documentation.</p></div>
+  </div>
+  <ul class="ink-chips"><li>React Native (Expo)</li><li>SQLite</li><li>KNN algorithm</li><li>Node.js</li><li>Express</li><li>Railway</li><li>Figma</li></ul>
+
+  <!-- ===== understanding the user ===== -->
+  <h3 id="cs-user">Understanding the user</h3>
+  <h4>User research summary</h4>
+  <p>I planned a five-question survey and three short interviews around how people track spending today and what makes them stop. Going in, I assumed users mainly wanted charts. The research pointed somewhere else: speed of logging and being able to trust and correct the automatic category mattered more.</p>
+  <p class="note">Note: the interview responses below are sample responses I wrote to test the survey and plan the design. They are not answers from real participants.</p>
+  <div class="cards quotes">
+    <div><b>Sample response 1</b>"If I just type what I bought and the app figures out the rest, I'd probably use it more."</div>
+    <div><b>Sample response 2</b>"If I could just log something in under 30 seconds, that would be ideal. Speed is everything for me."</div>
+    <div><b>Sample response 3</b>"If the confidence score is shown and I can override it, then yes, I'd trust it."</div>
+  </div>
+  <h4>Pain points</h4>
+  <div class="cards">
+    <div><b>1. Logging is slow</b>Trackers that ask for too many fields get abandoned. WiSpend asks for three: description, amount, and date.</div>
+    <div><b>2. Sorting is tedious</b>Picking a category for every expense is a chore. The KNN model suggests one with a single tap to accept.</div>
+    <div><b>3. Hard to trust automation</b>A guess with no explanation feels risky. Every prediction shows a confidence score and a Change button.</div>
+    <div><b>4. No early warning</b>People only notice overspending at the end of the month. WiSpend sends alerts as the budget runs low.</div>
+  </div>
+  <h4>Persona and problem statement</h4>
+  <div class="pair">
+    <div class="persona">
+      <p class="p-name">Bea, 20 <small>(a fictional persona based on the target users)</small></p>
+      <p><b>Who:</b> a BSIT student in Olongapo living on a weekly allowance.</p>
+      <p><b>Goals:</b> know where her money goes and make it last until the next allowance.</p>
+      <p><b>Frustrations:</b> trackers that take too long, apps that want her bank account, and finding out too late that she overspent.</p>
+    </div>
+    <p class="statement">Bea is a college student on a weekly allowance who needs a fast way to log and sort her spending because she gives up on trackers that take more than a few seconds to use.</p>
+  </div>
+  <h4>User journey map</h4>
+  <ol class="journey">
+    <li><b>Buys lunch</b><span>Wants to log it before she forgets.</span><em>Opportunity: one tap to start from the dashboard.</em></li>
+    <li><b>Logs the expense</b><span>Types "Jollibee" and the amount.</span><em>Opportunity: only three fields.</em></li>
+    <li><b>Sees the prediction</b><span>Unsure if the app guessed right.</span><em>Opportunity: show the category and confidence.</em></li>
+    <li><b>Saves it</b><span>Relieved it took seconds.</span><em>Opportunity: Accept and Save in one tap.</em></li>
+    <li><b>Checks her budget</b><span>Worried about the rest of the month.</span><em>Opportunity: alerts before the money runs out.</em></li>
+  </ol>
+
+  <!-- ===== starting the design ===== -->
+  <h3 id="cs-design">Starting the design</h3>
+  <h4>Wireframes</h4>
+  <p>I sketched the wireframes directly in Figma on April 1 and 2, 2026, starting with the four screens users visit most: Login, Dashboard, Add Expense, and History. I kept Add Expense to a single screen so logging never takes more than one step, and put the prediction right under the form so users see the result without scrolling.</p>
+  <p><a class="cs-link" href="https://www.figma.com/design/162yVk8XIPhpMjG2fkFgOM/Untitled?node-id=22-2&amp;p=f&amp;t=wl0QagsSSxXllN4f-0" target="_blank" rel="noopener">View the wireframes and mockups in Figma<span class="sr-only"> (opens in a new tab)</span></a></p>
+  <h4>User flow</h4>
+  <ol class="flow">
+    <li>Register</li><li>Save your UID</li><li>Dashboard</li><li>Add expense</li><li>KNN predicts the category</li><li>Accept or change</li><li>Dashboard updates</li>
+  </ol>
+  <p>If there is no past data yet, the user picks the category by hand, and the model learns from it.</p>
+  <h4>How the KNN works</h4>
+  <ol class="steps">
+    <li>The description is matched against a keyword dictionary for each category.</li>
+    <li>The amount is compared against the user's own spending history.</li>
+    <li>The app measures how close the new expense is to every past one.</li>
+    <li>The three closest past expenses vote on the category.</li>
+    <li>The share of votes that agree becomes the confidence score.</li>
+  </ol>
+
+  <!-- ===== usability study ===== -->
+  <h3 id="cs-study">Usability study: findings</h3>
+  <p>I ran two rounds of testing on an Android phone. Each round had one tester, and both asked to stay anonymous.</p>
+  <div class="cards">
+    <div><b>Round 1: classmate tester</b>
+      <ol class="finds">
+        <li>The Terms of Service felt alarming, with red warning boxes stacked everywhere.</li>
+        <li>The UID warning needed to be clearer at the moment users receive their UID.</li>
+        <li>The overall interface needed a cleaner look.</li>
+      </ol>
+    </div>
+    <div><b>Round 2: mentor tester</b>
+      <ol class="finds">
+        <li>Nothing warned users once they spent more than their budget.</li>
+        <li>The graphs and categories needed to be easier to read.</li>
+        <li>One fixed income was awkward. Users needed a monthly income plus a way to add extra income such as gifts.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ===== refining the design ===== -->
+  <h3 id="cs-refine">Refining the design</h3>
+  <h4>Mockups: before and after the usability study</h4>
+  <p><b>Round 1 change:</b> I rewrote the Terms of Service as plain numbered sections and moved the strong warnings to the UID screen, right after sign-up, where users actually need them.</p>
+  <div class="ba">
+    <figure>
+      <div class="phone" role="img" aria-label="Recreated Terms of Service before the study, filled with red warning boxes and capital-letter warnings">
+        <div class="ph-top">Terms of Service</div>
+        <div class="ph-red"><strong>🔐 YOUR ACCOUNT UID: CRITICAL INFORMATION</strong><span>❌ WiSpend CANNOT retrieve your UID</span><span>❌ No email recovery, no support reset</span><span>❌ Losing it means permanent loss</span><span>✅ Write it down on paper</span><span>✅ Take a screenshot immediately</span></div>
+        <div class="ph-maroon"><strong>🚫 NEVER SHARE YOUR UID WITH ANYONE</strong><span>🚫 Never share it in messages or chats</span><span>🚫 WiSpend staff will NEVER ask for it</span></div>
+        <div class="ph-line"></div><div class="ph-line short"></div>
+      </div>
+      <figcaption><b>Before:</b> warnings crowded the terms. Recreated from the original code.</figcaption>
+    </figure>
+    <figure>
+      <div class="phone" role="img" aria-label="Recreated Terms of Service after the study, with calm numbered sections and the UID covered as section 3">
+        <div class="ph-top">Terms of Service</div>
+        <div class="ph-sec"><strong>1. Acceptance of Terms</strong><span>By creating an account you agree to these terms.</span></div>
+        <div class="ph-sec"><strong>2. Account and Credentials</strong><span>Keep your username, password, and UID secure.</span></div>
+        <div class="ph-sec"><strong>3. Account UID and Recovery</strong><span>Your 9-digit UID is the only way to recover your account. Never share it.</span></div>
+        <div class="ph-sec"><strong>4. Data and Privacy</strong><span>Your data stays on your device.</span></div>
+        <div class="ph-btn off">Scroll to the bottom to agree</div>
+      </div>
+      <figcaption><b>After:</b> plain numbered sections, with the UID explained as section 3. Recreated from the final code.</figcaption>
+    </figure>
+    <figure>
+      <div class="phone" role="img" aria-label="Recreated UID screen shown right after sign-up, with an important banner, the UID, a do-not-share warning, and a checkbox before continuing">
+        <div class="ph-warn">⚠️ IMPORTANT: read before continuing</div>
+        <div class="ph-uid"><small>YOUR ACCOUNT UID</small><strong>123-456-789</strong></div>
+        <div class="ph-red"><strong>🚨 The ONLY way to recover your account</strong><span>Save it now. WiSpend cannot recover it for you.</span></div>
+        <div class="ph-maroon"><strong>🚫 NEVER SHARE YOUR UID</strong><span>WiSpend staff will never ask for it.</span></div>
+        <div class="ph-check">☑ I have saved my UID</div>
+        <div class="ph-btn">Continue</div>
+      </div>
+      <figcaption><b>After:</b> the strong warnings now appear on the UID screen right after sign-up. Recreated from the final code; the UID is an example.</figcaption>
+    </figure>
+  </div>
+  <p><b>Round 2 changes:</b> budget alerts now cover the whole month, the income setup has a monthly income plus extra income, and the categories got clearer labels and summaries.</p>
+  <div class="ba">
+    <figure>
+      <img src="assets/images/wispend/alerts.jpg" alt="Phone notifications from WiSpend: Halfway Through Budget, Low Budget, Budget Critical, and Almost Out of Budget" width="540" height="740" loading="lazy">
+      <figcaption>Budget alerts fire at 50%, 25%, 15%, and 10% left. One large test purchase crossed several thresholds at once, so each alert fired, once per threshold for the month.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/wispend/dashboard-light.jpg" alt="WiSpend dashboard showing total spent this month, a Set Monthly Income card, a category chart, a weekly chart, and category filter chips" width="540" height="1218" loading="lazy">
+      <figcaption>The dashboard asks for a monthly income first. Extra income, like gifts, is added separately.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/wispend/filter-light.jpg" alt="History screen filtered to Shopping, with a summary card showing 1 transaction totaling 38,000 pesos" width="540" height="575" loading="lazy">
+      <figcaption>Picking a category shows a summary card with the count and total.</figcaption>
+    </figure>
+  </div>
+
+  <h4>Main mockups</h4>
+  <div class="gallery" data-mode="light">
+    <p class="mode-row"><button class="mode-btn" aria-pressed="false" data-mode-toggle>Show dark mode</button></p>
+    <div class="shots three">
+      <figure><img class="m-l" src="assets/images/wispend/add-light.jpg" alt="New Expense form in light mode with description, amount, date, and a Predict button" width="540" height="650" loading="lazy"><img class="m-d" src="assets/images/wispend/add-dark.jpg" alt="New Expense form in dark mode" width="540" height="650" loading="lazy"><figcaption>Add expense</figcaption></figure>
+      <figure><img class="m-l" src="assets/images/wispend/history-light.jpg" alt="History screen in light mode listing a Laptop and a Jollibee purchase, total 42,500 pesos" width="540" height="575" loading="lazy"><img class="m-d" src="assets/images/wispend/history-dark.jpg" alt="History screen in dark mode" width="540" height="575" loading="lazy"><figcaption>History</figcaption></figure>
+      <figure><img class="m-l" src="assets/images/wispend/search-light.jpg" alt="History search in light mode for Jollibee, showing one 4,500 peso result" width="540" height="450" loading="lazy"><img class="m-d" src="assets/images/wispend/search-dark.jpg" alt="History search in dark mode" width="540" height="450" loading="lazy"><figcaption>Search</figcaption></figure>
+      <figure><img class="m-l" src="assets/images/wispend/profile-light.jpg" alt="Profile screen in light mode with the account UID card, blurred here, and Cloud Backup buttons" width="540" height="980" loading="lazy"><img class="m-d" src="assets/images/wispend/profile-dark.jpg" alt="Profile screen in dark mode" width="540" height="980" loading="lazy"><figcaption>Profile and cloud backup (UID blurred)</figcaption></figure>
+      <figure><img class="m-l" src="assets/images/wispend/dashboard-light.jpg" alt="Dashboard in light mode" width="540" height="1218" loading="lazy"><img class="m-d" src="assets/images/wispend/dashboard-dark.jpg" alt="Dashboard in dark mode" width="540" height="1218" loading="lazy"><figcaption>Dashboard</figcaption></figure>
+      <figure><img class="m-l" src="assets/images/wispend/predict-light.jpg" alt="KNN prediction result in light mode" width="540" height="755" loading="lazy"><img class="m-d" src="assets/images/wispend/predict-dark.jpg" alt="KNN prediction result in dark mode" width="540" height="755" loading="lazy"><figcaption>KNN prediction</figcaption></figure>
+    </div>
+  </div>
+
+  <h4>High-fidelity prototype</h4>
+  <p>The high-fidelity mockups were finished in Figma in both light and dark mode by April 7, 2026, then built as the working Android app.</p>
+  <p class="cs-links">
+    <a class="cs-link" href="https://www.figma.com/design/162yVk8XIPhpMjG2fkFgOM/Untitled?node-id=22-2&amp;p=f&amp;t=wl0QagsSSxXllN4f-0" target="_blank" rel="noopener">Open the Figma file<span class="sr-only"> (opens in a new tab)</span></a>
+    <a class="cs-link" href="https://github.com/DaleCyrus/wispend" target="_blank" rel="noopener">See the code on GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+  </p>
+
+  <h4>Accessibility considerations</h4>
+  <div class="cards">
+    <div><b>1. Not color alone</b>The confidence score is shown as a number and a bar, and every category has an icon and a text label, so no meaning depends on color.</div>
+    <div><b>2. Light and dark mode</b>Every screen works in both themes, and the choice is saved between sessions for comfortable use at night.</div>
+    <div><b>3. Clear words and big targets</b>Large, labeled buttons like Accept and Save, and alerts that state the exact amount left in plain language.</div>
+  </div>
+
+  <!-- ===== takeaways ===== -->
+  <h3 id="cs-takeaways">Takeaways</h3>
+  <h4>Impact</h4>
+  <blockquote class="quote">"Out of all the students that presented us an app regarding finances that are similar to WiSpend, your project stands out and is the best one I've reviewed."<cite>Panel reviewer</cite></blockquote>
+  <h4>What I learned</h4>
+  <ul class="learn">
+    <li>Where a warning appears matters as much as what it says. The same UID warning felt scary in the terms and helpful on the UID screen.</li>
+    <li>Showing why the model guessed a category builds trust, so users accept good guesses and fix the rest.</li>
+    <li>Designing local-first made the app reliable even without internet, which also made demos safer.</li>
+    <li>Setting up a shared theme early would have made dark mode much faster to add across all screens.</li>
+    <li>Hosting details, like Railway clearing files on restart, need planning before launch.</li>
+  </ul>
+
+  <!-- ===== next steps ===== -->
+  <h3 id="cs-next">Next steps</h3>
+  <div class="cards">
+    <div><b>1. Recurring expenses</b>Templates for things paid every month, like load or rent, so they log themselves.</div>
+    <div><b>2. Month-to-month trends</b>Compare spending across months so users can see if they are improving.</div>
+    <div><b>3. Smarter predictions</b>A larger Filipino keyword dictionary so new accounts get accurate categories sooner.</div>
+  </div>
+
+  <h3>Let's connect</h3>
+  <p>Want to see more or work together? Email <a href="mailto:dalecyrus12@gmail.com">dalecyrus12@gmail.com</a> or find me on <a href="https://github.com/DaleCyrus" target="_blank" rel="noopener">GitHub<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+</div>
