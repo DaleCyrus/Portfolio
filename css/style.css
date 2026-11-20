@@ -3627,6 +3627,20 @@ button,a {
   display: none;
 }
 
+/* the notes size to their sentence, but never wider than the screen */
+.book-edge {
+  width: max-content;
+  max-width: 92vw;
+  white-space: normal;
+  text-align: center;
+}
+
+/* the quest board's note sits over the bottom of the board */
+.board-edge {
+  bottom: calc(var(--fh) + 2.2rem);
+  z-index: 8;
+}
+
 /* ===== where each decoration sits in its room =====
    (these used to be style="" attributes in the HTML; !important keeps them winning like before) */
 .surface-moon-1 {

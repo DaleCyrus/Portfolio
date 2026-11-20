@@ -15,7 +15,7 @@ Instead of a usual scrolling page, the portfolio is a small 2D dungeon. Visitors
 ## Features
 
 - **Floor navigation:** Previous/Next floor buttons, a dungeon map with shortcuts to every room and page, and links between rooms.
-- **Scrolling that depends on where the pointer is:** over the open book, the mouse wheel or touchpad turns its pages (and scrolls a page first if it has more text); anywhere else, one flick moves one floor. Boxes that scroll show "more" hints at their edges.
+- **Scrolling that depends on where the pointer is:** over the open book, the mouse wheel or touchpad turns its pages (and scrolls a page first if it has more text); over the quest board, it scrolls a quest that has more text and never changes floors; anywhere else, one flick moves one floor. A short note says how to change floors when you reach the end of the book or board. Boxes that scroll show "more" hints at their edges.
 - **Case studies** that unroll from scrolls, following the case study template: overview, users, design, usability study, refinements, takeaways and next steps.
 - **Movable, resizable windows** for certifications and contacts, and a certificate viewer.
 - **Responsive layout** for phones, tablets (upright and sideways) and desktops. On phones every room fits one screen and long panels show one page at a time.

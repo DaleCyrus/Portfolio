@@ -68,6 +68,7 @@ document.addEventListener('touchend', function () {
 
 // mouse wheel and touchpad on bigger screens, depending on where the pointer is:
 //  - over the open book: scroll the page if it has more text, otherwise turn to the next or previous pages
+//  - over the quest board: scroll a quest if it has more text, otherwise say how to change floors
 //  - over any other box that scrolls: scroll that box; when it runs out, the rest of that flick is ignored
 //  - anywhere else: one flick moves exactly one floor
 var snapMQ = matchMedia('(min-width:820px) and (min-height:561px)');
@@ -104,12 +105,20 @@ function flipBook(d) {
   turnTo(n);
 }
 // at the first or last page, say how to change floors instead of doing nothing
-var edgeNote = document.getElementById('bookEdge'), edgeTimer = null;
+function showNote(note, text) {
+  note.textContent = text;
+  note.hidden = false;
+  clearTimeout(note._timer);
+  note._timer = setTimeout(function () { note.hidden = true; }, 2600);
+}
+var bookNote = document.getElementById('bookEdge');
 function bookEdge(d) {
-  edgeNote.textContent = d > 0 ? 'Last page. Scroll outside the book to go down a floor.' : 'First page. Scroll outside the book to go up a floor.';
-  edgeNote.hidden = false;
-  clearTimeout(edgeTimer);
-  edgeTimer = setTimeout(function () { edgeNote.hidden = true; }, 2600);
+  showNote(bookNote, d > 0 ? 'Last page. Scroll outside the book to go down a floor.' : 'First page. Scroll outside the book to go up a floor.');
+}
+// the quest board works the same way: scrolling over it never changes floors
+var boardNote = document.getElementById('boardEdge');
+function boardEdge(d) {
+  showNote(boardNote, d > 0 ? 'End of the quest board. Scroll outside the board to go down a floor.' : 'Top of the quest board. Scroll outside the board to go up a floor.');
 }
 window.addEventListener('wheel', function (e) {
   if (!snapMQ.matches || e.ctrlKey) return;
@@ -126,5 +135,6 @@ window.addEventListener('wheel', function (e) {
   if (!newFlick(Math.abs(dy))) return;
   var d = dy > 0 ? 1 : -1;
   if (overOpenBook(e.target)) { flipBook(d); return; }
+  if (e.target.closest && e.target.closest('.board')) { boardEdge(d); return; }
   stepRoom(d);
 }, { passive: false });
